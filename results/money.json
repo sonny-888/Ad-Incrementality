@@ -1,0 +1,449 @@
+{
+ "assumptions": {
+  "attributed_roas": 8.0,
+  "margin": 0.3,
+  "illustrative": true,
+  "spend_proxy": "ad views",
+  "top_spend_share": 0.5
+ },
+ "from_experiment": {
+  "caused_share": {
+   "estimate": 0.5366159356509865,
+   "lo": 0.4977550325138615,
+   "hi": 0.5754768387881116
+  },
+  "best_half_effect_share": {
+   "estimate": 0.8377622836826208,
+   "lo": 0.7761720457460901,
+   "hi": 0.8993525216191516
+  },
+  "best_half_efficiency": {
+   "estimate": 1.6754883871544002,
+   "lo": 1.552973299132683,
+   "hi": 1.7990569852727296
+  },
+  "other_half_efficiency": {
+   "estimate": 0.3245116128455997,
+   "lo": 0.20094301472727036,
+   "hi": 0.44702670086731694
+  }
+ },
+ "base": {
+  "dashboard_profit_per_pound": 1.4,
+  "real_profit_per_pound": {
+   "estimate": 0.28789206406500656,
+   "lo": 0.19436605410487645,
+   "hi": 0.3811934110831501
+  },
+  "best_half_profit_per_pound": {
+   "estimate": 1.1564884487904166,
+   "lo": 0.9398659055696811,
+   "hi": 1.3851525567363194
+  },
+  "other_half_profit_per_pound": {
+   "estimate": -0.5825187619190778,
+   "lo": -0.7427264505731107,
+   "hi": -0.41913933515882446
+  },
+  "incremental_roas": {
+   "estimate": 4.292973546883355,
+   "lo": 3.9812201803495886,
+   "hi": 4.6039780369438335
+  },
+  "profit_after_cut_vs_now": {
+   "estimate": 2.0125812125651317,
+   "lo": 1.626987600144197,
+   "hi": 2.6573893864565137
+  },
+  "profit_change_per_pound_of_current_spend": {
+   "estimate": 0.29125938095953885,
+   "lo": 0.2095696675794123,
+   "hi": 0.3713632252865553
+  }
+ },
+ "grid": {
+  "4x_20pct": {
+   "dashboard_profit_per_pound": -0.19999999999999996,
+   "real_profit_per_pound": {
+    "estimate": -0.5707026453116645,
+    "lo": -0.6018779819650412,
+    "hi": -0.5396021963056166
+   },
+   "other_half_profit_per_pound": {
+    "estimate": -0.8608395873063592,
+    "lo": -0.9142421501910369,
+    "hi": -0.8063797783862747
+   }
+  },
+  "4x_30pct": {
+   "dashboard_profit_per_pound": 0.19999999999999996,
+   "real_profit_per_pound": {
+    "estimate": -0.3560539679674967,
+    "lo": -0.4028169729475618,
+    "hi": -0.30940329445842496
+   },
+   "other_half_profit_per_pound": {
+    "estimate": -0.791259380959539,
+    "lo": -0.8713632252865553,
+    "hi": -0.7095696675794122
+   }
+  },
+  "4x_40pct": {
+   "dashboard_profit_per_pound": 0.6000000000000001,
+   "real_profit_per_pound": {
+    "estimate": -0.1414052906233289,
+    "lo": -0.20375596393008227,
+    "hi": -0.07920439261123324
+   },
+   "other_half_profit_per_pound": {
+    "estimate": -0.7216791746127185,
+    "lo": -0.8284843003820738,
+    "hi": -0.6127595567725496
+   }
+  },
+  "4x_50pct": {
+   "dashboard_profit_per_pound": 1.0,
+   "real_profit_per_pound": {
+    "estimate": 0.07324338672083885,
+    "lo": -0.004694954912602856,
+    "hi": 0.15099450923595836
+   },
+   "other_half_profit_per_pound": {
+    "estimate": -0.6520989682658981,
+    "lo": -0.7856053754775922,
+    "hi": -0.5159494459656871
+   }
+  },
+  "6x_20pct": {
+   "dashboard_profit_per_pound": 0.20000000000000018,
+   "real_profit_per_pound": {
+    "estimate": -0.35605396796749667,
+    "lo": -0.4028169729475618,
+    "hi": -0.30940329445842496
+   },
+   "other_half_profit_per_pound": {
+    "estimate": -0.791259380959539,
+    "lo": -0.8713632252865553,
+    "hi": -0.7095696675794121
+   }
+  },
+  "6x_30pct": {
+   "dashboard_profit_per_pound": 0.7999999999999998,
+   "real_profit_per_pound": {
+    "estimate": -0.03408095195124505,
+    "lo": -0.10422545942134262,
+    "hi": 0.035895058312362386
+   },
+   "other_half_profit_per_pound": {
+    "estimate": -0.6868890714393083,
+    "lo": -0.807044837929833,
+    "hi": -0.5643545013691184
+   }
+  },
+  "6x_40pct": {
+   "dashboard_profit_per_pound": 1.4000000000000004,
+   "real_profit_per_pound": {
+    "estimate": 0.28789206406500667,
+    "lo": 0.19436605410487645,
+    "hi": 0.3811934110831501
+   },
+   "other_half_profit_per_pound": {
+    "estimate": -0.5825187619190778,
+    "lo": -0.7427264505731107,
+    "hi": -0.41913933515882434
+   }
+  },
+  "6x_50pct": {
+   "dashboard_profit_per_pound": 2.0,
+   "real_profit_per_pound": {
+    "estimate": 0.6098650800812583,
+    "lo": 0.4929575676310956,
+    "hi": 0.7264917638539375
+   },
+   "other_half_profit_per_pound": {
+    "estimate": -0.47814845239884723,
+    "lo": -0.6784080632163884,
+    "hi": -0.27392416894853056
+   }
+  },
+  "8x_20pct": {
+   "dashboard_profit_per_pound": 0.6000000000000001,
+   "real_profit_per_pound": {
+    "estimate": -0.1414052906233289,
+    "lo": -0.20375596393008227,
+    "hi": -0.07920439261123324
+   },
+   "other_half_profit_per_pound": {
+    "estimate": -0.7216791746127185,
+    "lo": -0.8284843003820738,
+    "hi": -0.6127595567725496
+   }
+  },
+  "8x_30pct": {
+   "dashboard_profit_per_pound": 1.4,
+   "real_profit_per_pound": {
+    "estimate": 0.28789206406500656,
+    "lo": 0.19436605410487645,
+    "hi": 0.3811934110831501
+   },
+   "other_half_profit_per_pound": {
+    "estimate": -0.5825187619190778,
+    "lo": -0.7427264505731107,
+    "hi": -0.41913933515882446
+   }
+  },
+  "8x_40pct": {
+   "dashboard_profit_per_pound": 2.2,
+   "real_profit_per_pound": {
+    "estimate": 0.7171894187533422,
+    "lo": 0.5924880721398355,
+    "hi": 0.8415912147775335
+   },
+   "other_half_profit_per_pound": {
+    "estimate": -0.443358349225437,
+    "lo": -0.6569686007641475,
+    "hi": -0.22551911354509924
+   }
+  },
+  "8x_50pct": {
+   "dashboard_profit_per_pound": 3.0,
+   "real_profit_per_pound": {
+    "estimate": 1.1464867734416777,
+    "lo": 0.9906100901747943,
+    "hi": 1.3019890184719167
+   },
+   "other_half_profit_per_pound": {
+    "estimate": -0.3041979365317963,
+    "lo": -0.5712107509551846,
+    "hi": -0.03189889193137409
+   }
+  },
+  "10x_20pct": {
+   "dashboard_profit_per_pound": 1.0,
+   "real_profit_per_pound": {
+    "estimate": 0.07324338672083897,
+    "lo": -0.0046949549126027446,
+    "hi": 0.15099450923595836
+   },
+   "other_half_profit_per_pound": {
+    "estimate": -0.6520989682658981,
+    "lo": -0.7856053754775922,
+    "hi": -0.5159494459656869
+   }
+  },
+  "10x_30pct": {
+   "dashboard_profit_per_pound": 2.0,
+   "real_profit_per_pound": {
+    "estimate": 0.6098650800812583,
+    "lo": 0.4929575676310958,
+    "hi": 0.7264917638539375
+   },
+   "other_half_profit_per_pound": {
+    "estimate": -0.47814845239884723,
+    "lo": -0.6784080632163884,
+    "hi": -0.27392416894853044
+   }
+  },
+  "10x_40pct": {
+   "dashboard_profit_per_pound": 3.0,
+   "real_profit_per_pound": {
+    "estimate": 1.146486773441678,
+    "lo": 0.9906100901747945,
+    "hi": 1.3019890184719167
+   },
+   "other_half_profit_per_pound": {
+    "estimate": -0.3041979365317962,
+    "lo": -0.5712107509551845,
+    "hi": -0.03189889193137387
+   }
+  },
+  "10x_50pct": {
+   "dashboard_profit_per_pound": 4.0,
+   "real_profit_per_pound": {
+    "estimate": 1.6831084668020972,
+    "lo": 1.488262612718493,
+    "hi": 1.8774862730898958
+   },
+   "other_half_profit_per_pound": {
+    "estimate": -0.13024742066474537,
+    "lo": -0.46401343869398065,
+    "hi": 0.21012638508578257
+   }
+  },
+  "12x_20pct": {
+   "dashboard_profit_per_pound": 1.4000000000000004,
+   "real_profit_per_pound": {
+    "estimate": 0.28789206406500667,
+    "lo": 0.19436605410487645,
+    "hi": 0.3811934110831501
+   },
+   "other_half_profit_per_pound": {
+    "estimate": -0.5825187619190778,
+    "lo": -0.7427264505731107,
+    "hi": -0.41913933515882434
+   }
+  },
+  "12x_30pct": {
+   "dashboard_profit_per_pound": 2.5999999999999996,
+   "real_profit_per_pound": {
+    "estimate": 0.9318380960975099,
+    "lo": 0.7915490811573148,
+    "hi": 1.0717901166247248
+   },
+   "other_half_profit_per_pound": {
+    "estimate": -0.3737781428786167,
+    "lo": -0.614089675859666,
+    "hi": -0.1287090027382367
+   }
+  },
+  "12x_40pct": {
+   "dashboard_profit_per_pound": 3.8000000000000007,
+   "real_profit_per_pound": {
+    "estimate": 1.5757841281300133,
+    "lo": 1.3887321082097528,
+    "hi": 1.7623868221663002
+   },
+   "other_half_profit_per_pound": {
+    "estimate": -0.16503752383815556,
+    "lo": -0.4854529011462214,
+    "hi": 0.16172132968235126
+   }
+  },
+  "12x_50pct": {
+   "dashboard_profit_per_pound": 5.0,
+   "real_profit_per_pound": {
+    "estimate": 2.2197301601625163,
+    "lo": 1.9859151352621913,
+    "hi": 2.452983527707875
+   },
+   "other_half_profit_per_pound": {
+    "estimate": 0.04370309520230553,
+    "lo": -0.35681612643277677,
+    "hi": 0.45215166210293894
+   }
+  },
+  "15x_20pct": {
+   "dashboard_profit_per_pound": 2.0,
+   "real_profit_per_pound": {
+    "estimate": 0.6098650800812584,
+    "lo": 0.4929575676310958,
+    "hi": 0.7264917638539375
+   },
+   "other_half_profit_per_pound": {
+    "estimate": -0.4781484523988472,
+    "lo": -0.6784080632163884,
+    "hi": -0.27392416894853056
+   }
+  },
+  "15x_30pct": {
+   "dashboard_profit_per_pound": 3.5,
+   "real_profit_per_pound": {
+    "estimate": 1.4147976201218873,
+    "lo": 1.2394363514466433,
+    "hi": 1.5897376457809058
+   },
+   "other_half_profit_per_pound": {
+    "estimate": -0.21722267859827082,
+    "lo": -0.5176120948245826,
+    "hi": 0.0891137465772042
+   }
+  },
+  "15x_40pct": {
+   "dashboard_profit_per_pound": 5.0,
+   "real_profit_per_pound": {
+    "estimate": 2.219730160162517,
+    "lo": 1.9859151352621918,
+    "hi": 2.452983527707875
+   },
+   "other_half_profit_per_pound": {
+    "estimate": 0.04370309520230564,
+    "lo": -0.35681612643277677,
+    "hi": 0.45215166210293894
+   }
+  },
+  "15x_50pct": {
+   "dashboard_profit_per_pound": 6.5,
+   "real_profit_per_pound": {
+    "estimate": 3.024662700203146,
+    "lo": 2.7323939190777393,
+    "hi": 3.3162294096348433
+   },
+   "other_half_profit_per_pound": {
+    "estimate": 0.304628869002882,
+    "lo": -0.19602015804097103,
+    "hi": 0.8151895776286736
+   }
+  }
+ },
+ "break_even_attributed_roas": {
+  "20pct": {
+   "all_spend": {
+    "estimate": 9.31755100821514,
+    "lo": 8.68813875284233,
+    "hi": 10.047171014914268
+   },
+   "best_half": {
+    "estimate": 5.564602030088395,
+    "lo": 5.03112472454241,
+    "hi": 6.185994591482304
+   },
+   "other_half": {
+    "estimate": 28.74380668017981,
+    "lo": 20.65899918269483,
+    "hi": 46.64296048598246
+   }
+  },
+  "30pct": {
+   "all_spend": {
+    "estimate": 6.211700672143428,
+    "lo": 5.792092501894886,
+    "hi": 6.698114009942846
+   },
+   "best_half": {
+    "estimate": 3.7097346867255974,
+    "lo": 3.3540831496949406,
+    "hi": 4.123996394321536
+   },
+   "other_half": {
+    "estimate": 19.16253778678654,
+    "lo": 13.772666121796556,
+    "hi": 31.095306990654972
+   }
+  },
+  "40pct": {
+   "all_spend": {
+    "estimate": 4.65877550410757,
+    "lo": 4.344069376421165,
+    "hi": 5.023585507457134
+   },
+   "best_half": {
+    "estimate": 2.7823010150441974,
+    "lo": 2.515562362271205,
+    "hi": 3.092997295741152
+   },
+   "other_half": {
+    "estimate": 14.371903340089904,
+    "lo": 10.329499591347416,
+    "hi": 23.32148024299123
+   }
+  },
+  "50pct": {
+   "all_spend": {
+    "estimate": 3.7270204032860565,
+    "lo": 3.4752555011369317,
+    "hi": 4.018868405965708
+   },
+   "best_half": {
+    "estimate": 2.2258408120353583,
+    "lo": 2.0124498898169643,
+    "hi": 2.474397836592922
+   },
+   "other_half": {
+    "estimate": 11.497522672071923,
+    "lo": 8.263599673077932,
+    "hi": 18.657184194392983
+   }
+  }
+ },
+ "conversions_lost_by_cut": 0.16223771631737915
+}

@@ -1,0 +1,36 @@
+# Raw and processed data stay local (root folder only; dashboard/data/ holds small published CSVs)
+/data/
+*.duckdb
+*.duckdb.wal
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+
+# Secrets: never commit credentials
+.env
+.env.*
+*.pem
+*.key
+*.json.key
+*credentials*.json
+*service-account*.json
+client_secret*.json
+application_default_credentials.json
+.bigqueryrc
+.Renviron
+
+# Tool caches and build output
+.pytest_cache/
+*.egg-info/
+
+# R session files
+.Rhistory
+.RData
+.Rproj.user/
+
+# Local working notes (mention account setup or interview prep; not for publishing)
+CLAUDE.md
+brief/
+
+# Report source (kept locally; only the PDF is published)
+report/report.html

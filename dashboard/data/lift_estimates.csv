@@ -1,0 +1,7 @@
+outcome,estimate,lift,lo,hi
+visit,Raw difference,0.270737,0.261566,0.279974
+visit,"Adjusted, linear",0.20245,0.195716,0.209185
+visit,"Adjusted, doubly robust",0.195594,0.189049,0.20214
+conversion,Raw difference,0.594488,0.543698,0.64695
+conversion,"Adjusted, linear",0.516961,0.482593,0.55133
+conversion,"Adjusted, doubly robust",0.524942,0.48688,0.563004

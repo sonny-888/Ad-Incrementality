@@ -1,0 +1,66 @@
+{
+ "data": {
+  "criteo_users": "13,979,592",
+  "treated_share": "85.00%",
+  "iowa_counties": "96",
+  "iowa_weeks": "537"
+ },
+ "finding_1_experiment_health": {
+  "max_abs_smd": "0.049",
+  "classifier_auc": "0.509",
+  "placebo_auc": "0.499"
+ },
+ "finding_2_naive": {
+  "naive_multiple": "41x",
+  "exposed_conversion_rate": "5.38%",
+  "unexposed_conversion_rate": "0.13%",
+  "baseline_conversion_rate": "2.49%",
+  "baseline_multiple": "19x"
+ },
+ "finding_3_itt": {
+  "conversion_lift_raw": "+59%",
+  "conversion_lift_adjusted": "+52%",
+  "visit_lift_raw": "+27%",
+  "visit_lift_adjusted": "+20%"
+ },
+ "finding_4_effect_of_seeing_an_ad": {
+  "conversion_effect_points": "+2.89 points",
+  "real_multiple": "2.2x"
+ },
+ "finding_5_credited_vs_caused": {
+  "caused_per_100": "54",
+  "caused_per_100_interval": "50 to 58",
+  "caused_per_100_raw": "59",
+  "attribution_overstatement": "1.9x"
+ },
+ "finding_6_who_is_persuaded": {
+  "top20_share_of_conversion_effect": "91%",
+  "top20_share_of_visit_effect": "91%",
+  "half_spend_keeps_conversions": "84%",
+  "half_spend_keeps_conversions_interval": "78% to 90%",
+  "half_spend_keeps_visits": "69%"
+ },
+ "finding_7_money": {
+  "assumed_roas": "8",
+  "assumed_margin": "30%",
+  "dashboard_profit_per_pound": "+£1.40",
+  "real_profit_per_pound": "+£0.29",
+  "best_half_profit_per_pound": "+£1.16",
+  "other_half_profit_per_pound": "-£0.58",
+  "profit_multiple_after_cut": "2.0x",
+  "break_even_roas_30pct_margin": "6.2",
+  "break_even_roas_other_half_30pct_margin": "19.2"
+ },
+ "finding_8_geo": {
+  "did_false_alarms": "3% to 8%",
+  "synthetic_control_false_alarms": "4% to 7%",
+  "causalimpact_style_false_alarms": "10% to 18%",
+  "best_design_min_detectable_lift": "9%",
+  "simulated_tests": "2,700"
+ },
+ "finding_9_plan": {
+  "users_for_10pct_conversion_lift_10pct_holdout": "4.9 million",
+  "users_for_10pct_conversion_lift_even_split": "1.8 million",
+  "users_for_5pct_visit_lift_10pct_holdout": "0.9 million"
+ }
+}

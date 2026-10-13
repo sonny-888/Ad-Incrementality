@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "incrementality"
+version = "0.1.0"
+description = "Did the ads actually work? Incrementality on the Criteo uplift test and simulated geo tests on Iowa liquor sales"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.13",
+    "pandas>=2.1",
+    "pyarrow>=16",
+    "duckdb>=1.1",
+    "statsmodels>=0.14",
+    "linearmodels>=6.0",
+    "scikit-learn>=1.4,<1.10",  # scikit-uplift 0.5.1 uses stable_cumsum, removed in scikit-learn 1.10
+    "scikit-uplift>=0.5",
+    "matplotlib>=3.8",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "ipykernel>=6", "nbconvert>=7"]
+
+[tool.setuptools.packages.find]
+where = ["python"]
+
+[tool.pytest.ini_options]
+testpaths = ["python/tests"]

@@ -1,0 +1,8 @@
+kpi,value,format,display,note
+Caused per 100 credited conversions,53.6616,number,54,95% interval 50 to 58
+Naive effect of seeing an ad (multiple),41.0781,multiple,41x,What a dashboard comparison shows
+Real effect of seeing an ad (multiple),2.15804,multiple,2.2x,From the randomised test
+"Conversion lift, whole treated group",0.524942,percent,+52%,Adjusted (raw +59%)
+Share of effect in top 20% of users,0.908455,percent,91%,Conversions
+Real profit per £1 of ads,0.287892,currency,+£0.29,Dashboard implies +£1.40 (illustrative)
+"Smallest lift a 20-county, 12-week geo test detects",0.0875,percent,9%,"Iowa sales, simulated campaigns"

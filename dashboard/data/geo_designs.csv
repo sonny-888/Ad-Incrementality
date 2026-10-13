@@ -1,0 +1,28 @@
+method,test_counties,test_weeks,false_alarm_rate,min_detectable_lift,typical_error
+Difference-in-differences,5,4,0.06,0.23,0.0779539
+Difference-in-differences,5,8,0.0366667,0.19,0.0632418
+Difference-in-differences,5,12,0.04,0.1625,0.0521037
+Difference-in-differences,10,4,0.05,0.1975,0.0597571
+Difference-in-differences,10,8,0.03,0.1325,0.0442225
+Difference-in-differences,10,12,0.08,0.1325,0.0419372
+Difference-in-differences,20,4,0.0566667,0.1175,0.0426742
+Difference-in-differences,20,8,0.06,0.1,0.0351915
+Difference-in-differences,20,12,0.0766667,0.0875,0.0302293
+CausalImpact-style,5,4,0.103333,0.285,0.0964679
+CausalImpact-style,5,8,0.163333,0.225,0.0769131
+CausalImpact-style,5,12,0.153333,0.195,0.067212
+CausalImpact-style,10,4,0.106667,0.2575,0.0784762
+CausalImpact-style,10,8,0.146667,0.1725,0.0580888
+CausalImpact-style,10,12,0.146667,0.17,0.0586063
+CausalImpact-style,20,4,0.113333,0.195,0.0673763
+CausalImpact-style,20,8,0.176667,0.165,0.0557271
+CausalImpact-style,20,12,0.116667,0.135,0.0473613
+Synthetic control,5,4,0.04,0.2575,0.087116
+Synthetic control,5,8,0.0633333,0.2,0.0643551
+Synthetic control,5,12,0.06,0.1825,0.0592815
+Synthetic control,10,4,0.0566667,0.195,0.0639132
+Synthetic control,10,8,0.06,0.1225,0.0462826
+Synthetic control,10,12,0.05,0.12,0.0432195
+Synthetic control,20,4,0.0533333,0.15,0.0494232
+Synthetic control,20,8,0.0666667,0.115,0.0388076
+Synthetic control,20,12,0.05,0.09,0.0320697
