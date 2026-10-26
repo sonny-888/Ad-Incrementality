@@ -75,8 +75,11 @@ def main() -> None:
                                    f"notebooks/{nb}"])
 
     run("Headline facts (every number quoted in the README, report and deck)", [PY, S + "headline_facts.py"])
-    run("Dashboard data files for Looker Studio", [PY, S + "export_dashboard_data.py"])
-    run("README matches the results", [PY, "-m", "pytest", "-q", "python/tests/test_headline_facts.py"])
+    run("Dashboard data files", [PY, S + "export_dashboard_data.py"])
+    run("Power BI project, validated against Microsoft's schemas", [PY, "dashboard/build_pbip.py", "--validate"])
+    run("Report and deck PDFs", [PY, S + "build_documents.py"])
+    run("README, report and deck text match the results", [PY, "-m", "pytest", "-q",
+                                                          "python/tests/test_headline_facts.py"])
     print("\nAll done.")
 
 

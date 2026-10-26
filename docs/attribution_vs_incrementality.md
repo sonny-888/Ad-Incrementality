@@ -6,8 +6,8 @@ have happened without the ad. Chart: `figures/attribution/credited_vs_caused.png
 
 ## How the two numbers are defined
 
-- **Credited:** every conversion by a user who saw an ad. This is how view-based attribution hands out credit: the user
-  saw an ad, then bought, so the ad gets the sale. The dataset has ad views, not clicks, so this is the attribution
+- **Credited:** every conversion by a user who saw an ad. This is how view-based (view-through) attribution hands out
+  credit: the user saw an ad, then bought, so the ad gets the sale. The dataset has ad views, not clicks, so this is the attribution
   rule we can reproduce. A click-based rule would credit fewer conversions, and the overstatement would be smaller.
 - **Caused:** the effect of seeing an ad from finding 4 (doubly robust, +2.89 points), divided by the conversion rate
   of the users who saw one (5.38%). That gives 54%.

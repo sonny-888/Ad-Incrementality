@@ -1,8 +1,16 @@
 kpi,value,format,display,note
-Caused per 100 credited conversions,53.6616,number,54,95% interval 50 to 58
-Naive effect of seeing an ad (multiple),41.0781,multiple,41x,What a dashboard comparison shows
-Real effect of seeing an ad (multiple),2.15804,multiple,2.2x,From the randomised test
-"Conversion lift, whole treated group",0.524942,percent,+52%,Adjusted (raw +59%)
-Share of effect in top 20% of users,0.908455,percent,91%,Conversions
-Real profit per £1 of ads,0.287892,currency,+£0.29,Dashboard implies +£1.40 (illustrative)
-"Smallest lift a 20-county, 12-week geo test detects",0.0875,percent,9%,"Iowa sales, simulated campaigns"
+Caused per 100 credited conversions,53.66159357,number,54,95% interval 50 to 58
+Naive effect of seeing an ad (multiple),41.07810805,multiple,41x,What a dashboard comparison shows
+Real effect of seeing an ad (multiple),2.15803709,multiple,2.2x,From the randomised test
+"Conversion lift, whole treated group",0.52494194,percent,+52%,Adjusted (raw +59%)
+Share of effect in top 20% of users,0.90845522,percent,91%,Conversions
+Real profit per £1 of ads,0.28789206,currency,+£0.29,Dashboard implies +£1.40 (illustrative)
+"Smallest lift a 20-county, 12-week geo test detects",0.08750000,percent,9%,"Iowa sales, simulated campaigns"
+Half the spend keeps (conversions caused),0.83776228,percent,84%,Aimed at likely buyers; 95% interval 78% to 90%
+Dashboard profit per £1 of ads,1.40000000,currency,+£1.40,"Illustrative: ROAS 8, margin 30%"
+Weaker half profit per £1,-0.58251876,currency,-£0.58,The half of spend on the least likely buyers
+"Break-even dashboard ROAS, 30% margin",6.21170067,number,6.2,"Below this, retargeting loses money"
+"Break-even dashboard ROAS, weaker half",19.16253779,number,19.2,At a 30% margin
+CausalImpact-style false alarm rate,0.13629630,percent,10% to 18%,Across 9 designs; promised 5%
+Difference-in-differences false alarm rate,0.05444444,percent,3% to 8%,Across 9 designs; promised 5%
+"Users for a +10% conversion lift, 10% holdout",4945188.46846592,number,4.9 million,1.8 million with a 50/50 split

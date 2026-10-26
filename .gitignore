@@ -32,5 +32,14 @@ application_default_credentials.json
 CLAUDE.md
 brief/
 
-# Report source (kept locally; only the PDF is published)
+# Generated Power BI project (rebuilt by dashboard/build_pbip.py) and Power BI Desktop local files
+dashboard/*.Report/
+dashboard/*.SemanticModel/
+dashboard/*.pbip
+dashboard/**/.pbi/
+
+# Report and deck sources (kept locally; only the PDFs are published)
 report/report.html
+report/report_content.md
+presentation/deck.html
+presentation/deck_plan.md
