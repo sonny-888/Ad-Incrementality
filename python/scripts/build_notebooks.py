@@ -112,7 +112,7 @@ pd.DataFrame({
         ("md", """A model beats a coin flip by a hair, and the placebo shows that edge is real. Criteo's paper explains why: the file merges several advertisers' tests that had different treated shares. The features were logged before any ad was shown, so notebook 03 adjusts for them."""),
     ],
     "03_lift.ipynb": [
-        ("md", """# 03 Lift: naive view, real lift, effect of seeing an ad, and money (findings 2 to 5 and 7)
+        ("md", """# 03 Lift: naive view, estimated lift, effect of seeing an ad, and money (findings 2 to 5 and 7)
 
 Write-ups: `docs/lift.md`, `docs/attribution_vs_incrementality.md`, `docs/money.md`.
 
@@ -129,7 +129,7 @@ unexposed = nt + c"""),
         ("md", "## Finding 2: the naive view (what a dashboard does)"),
         ("code", """naive = rate_diff(e["conv"], e["n"], unexposed["conv"], unexposed["n"])
 print(f"Saw an ad: {naive.rate_t:.2%}   Didn't: {naive.rate_c:.2%}   Looks like {naive.rate_t / naive.rate_c:.0f}x")"""),
-        ("md", "## Finding 3: the real lift for the whole treatment group (intent-to-treat)"),
+        ("md", "## Finding 3: the estimated lift for the whole treatment group (intent-to-treat)"),
         ("code", """itt = rate_diff(e["conv"] + nt["conv"], e["n"] + nt["n"], c["conv"], c["n"])
 print(f"Raw: {itt.rel:+.1%} (95% interval {itt.rel_lo:+.1%} to {itt.rel_hi:+.1%})")
 a = results("lift_aipw")
@@ -144,20 +144,28 @@ cols = duckdb.sql(f"SELECT conversion, exposure, treatment FROM '{CRITEO}'").df(
 iv = IV2SLS(cols["conversion"], np.ones(len(cols)), cols["exposure"], cols["treatment"]).fit(cov_type="robust")
 print(f"Our formula: +{ex.cace * 100:.3f} points   2SLS: +{iv.params['exposure'] * 100:.3f} points")
 print(f"Raw: users who saw an ad would have converted at {ex.baseline:.2%} anyway; with the ad {ex.rate_exposed:.2%}")
-print(f"Adjusted (from results): {a['conversion']['baseline']:.2%} anyway, so the real effect is "
+print(f"Adjusted (from results): {a['conversion']['baseline']:.2%} anyway, so the estimated causal effect is "
       f"{a['conversion']['rate_exposed'] / a['conversion']['baseline']:.1f}x, not {naive.rate_t / naive.rate_c:.0f}x")
 del cols"""),
         ("code", "show(\"lift/naive_vs_caused.png\")"),
+        ("md", """### How much does the correction depend on the method?
+
+`sensitivity_analysis.py` (about 20 minutes) re-estimates the lift with two model families and three adjustment styles: doubly robust, weighting only and outcome model only. If weighting balances the features, the propensity model has captured the leak."""),
+        ("code", """sens = results("sensitivity")
+print({k: round(v, 4) if isinstance(v, float) else v for k, v in sens["balance"].items()})
+pd.DataFrame(sens["rows"]).pivot(index="specification", columns="outcome", values="lift").round(3)"""),
+        ("code", "show(\"lift/sensitivity.png\")"),
         ("md", "## Finding 5: credited vs caused"),
         ("code", "show(\"attribution/credited_vs_caused.png\")"),
         ("md", """## Finding 7: is it worth the money?
 
-The data has no prices or costs, so two assumptions are stated openly (a dashboard ROAS of 8 and a 30% margin) and varied in the sensitivity tables in `docs/money.md`."""),
+**Scenario analysis, not observed profit.** The data has no prices or costs, so two assumptions are stated openly (a dashboard ROAS of 8 and a 30% margin) and varied in the sensitivity tables in `docs/money.md`."""),
         ("code", """m = results("money")
 b = m["base"]
-pd.DataFrame({"profit per £1": [b["dashboard_profit_per_pound"], b["real_profit_per_pound"]["estimate"],
+pd.DataFrame({"profit per £1": [b["dashboard_profit_per_pound"], b["incremental_profit_per_pound"]["estimate"],
                                 b["best_half_profit_per_pound"]["estimate"], b["other_half_profit_per_pound"]["estimate"]]},
-             index=["what the dashboard implies", "real, all spend", "real, best half of spend", "real, other half"])"""),
+             index=["what the dashboard implies", "incremental, all spend", "incremental, best half of spend",
+                    "incremental, other half"])"""),
         ("code", "show(\"money/profit_per_pound.png\")"),
     ],
     "04_uplift.ipynb": [
@@ -192,7 +200,7 @@ pd.DataFrame(rows).set_index(["outcome", "model"]).style.format("{:.0%}")"""),
     "05_geo_tests.ipynb": [
         ("md", """# 05 Geo tests and holdout sizing (findings 8 and 9)
 
-**Methods demonstration: real data, simulated campaign.** Real Iowa county sales, with a campaign we add ourselves so the true answer is known. Write-ups: `docs/geo.md`, `docs/recommendation.md`."""),
+**Technical appendix: a methods benchmark, not a measured campaign.** Real Iowa county sales, with a campaign we add ourselves (a uniform lift in random counties, no spillover) so the true answer is known. Write-ups: `docs/geo.md`, `docs/recommendation.md`."""),
         ("code", SETUP),
         ("code", """from incrementality.geo import did, inject_lift, structural_ts, synthetic_control
 

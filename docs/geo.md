@@ -1,6 +1,8 @@
 # Finding 8: Measuring a campaign by region (geo tests)
 
-**Methods demonstration: real data, simulated campaign.** Numbers come from `results/geo.json`
+**Technical appendix: a methods benchmark on real sales with simulated campaigns.** No real campaign is measured
+here. The question is which geo methods give honest answers on noisy regional data, and how big a campaign must be
+before any of them can see it. Numbers come from `results/geo.json`
 (`python/scripts/geo_simulation.py`). Charts: `figures/geo/example_test.png`, `figures/geo/min_detectable_lift.png`,
 `figures/geo/false_alarms.png`.
 
@@ -38,6 +40,16 @@ add a campaign we invent (so we know its true size), and see which methods find 
 4. A significant result with no campaign is a **false alarm**. Because every method learns only from the weeks before
    the campaign, adding a +L% campaign moves its estimate by exactly L% (proved in `python/tests/test_geo.py`), so the
    same runs tell us whether each design would catch a +2%, +5%, +10% campaign and so on.
+
+**What the simulated campaign assumes** (`inject_lift` in `python/incrementality/geo.py`):
+
+- **Uniform multiplicative lift:** every test county's sales rise by the same +L% in every campaign week (added as
+  log(1 + L) to log sales). No ramp-up, no carryover after the campaign ends.
+- **Random test counties:** chosen uniformly at random, not matched or stratified.
+- **No spillover:** control counties are untouched, so there is no leakage across county lines.
+- **Fixed history:** 104 weeks of pre-period for every test, with March to June 2020 excluded.
+
+Real campaigns break each of these, so the detectable lifts here are a best case for this data.
 
 ## Results
 

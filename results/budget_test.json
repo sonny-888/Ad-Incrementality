@@ -1,0 +1,29 @@
+{
+ "design": "50/50 randomised holdout inside the weaker-half segment",
+ "outcomes": {
+  "conversion": {
+   "segment_share_of_users": 0.892957785771077,
+   "segment_share_of_ad_views": 0.5,
+   "control_rate": 0.0003130446778425385,
+   "predicted_lift": 0.5458552553538772,
+   "predicted_lift_lo": 0.3294678038023232,
+   "predicted_lift_hi": 0.7622427069054313,
+   "break_even_lift": 1.3060880193950732,
+   "break_even_efficiency": 0.776470915201567,
+   "predicted_efficiency": 0.3245116128455997,
+   "users_needed": 406466.99047355365
+  },
+  "visit": {
+   "segment_share_of_users": 0.8967078488086173,
+   "segment_share_of_ad_views": 0.5,
+   "control_rate": 0.008803430538979076,
+   "predicted_lift": 0.2896825238740324,
+   "predicted_lift_lo": 0.25255887848223496,
+   "predicted_lift_hi": 0.3268061692658299,
+   "break_even_lift": 0.6931340683249749,
+   "break_even_efficiency": 0.776470915201567,
+   "predicted_efficiency": 0.3245116128455997,
+   "users_needed": 33325.84181029802
+  }
+ }
+}

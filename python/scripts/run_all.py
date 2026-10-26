@@ -1,7 +1,7 @@
 """Rebuild every result, chart and headline number, in order, stopping at the first failure.
 
-    py python/scripts/run_all.py                    # everything (about 45 minutes)
-    py python/scripts/run_all.py --skip-slow        # reuse the three slow steps' saved results (about 12 minutes)
+    py python/scripts/run_all.py                    # everything (about 60 minutes)
+    py python/scripts/run_all.py --skip-slow        # reuse the four slow steps' saved results (about 12 minutes)
     py python/scripts/run_all.py --skip-notebooks
 
 Data comes first and is a separate step:
@@ -20,7 +20,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 PY = sys.executable
 S = "python/scripts/"
-SLOW = {"lift_aipw.py", "uplift_analysis.py", "geo_simulation.py"}
+SLOW = {"lift_aipw.py", "sensitivity_analysis.py", "uplift_analysis.py", "geo_simulation.py"}
 NOTEBOOKS = ["01_data.ipynb", "02_experiment_checks.ipynb", "03_lift.ipynb", "04_uplift.ipynb", "05_geo_tests.ipynb"]
 
 
@@ -33,7 +33,7 @@ def run(label: str, args: list[str]) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--skip-slow", action="store_true", help="reuse saved results of the three slow steps")
+    ap.add_argument("--skip-slow", action="store_true", help="reuse saved results of the four slow steps")
     ap.add_argument("--skip-notebooks", action="store_true", help="skip re-running the notebooks")
     args = ap.parse_args()
 
@@ -50,12 +50,14 @@ def main() -> None:
         ("Finding 1: experiment health", "experiment_checks.py"),
         ("Findings 2 to 4: naive view, lift, effect of seeing an ad", "lift_analysis.py"),
         ("Findings 3 to 5: doubly robust lift (slow)", "lift_aipw.py"),
+        ("Findings 3 to 5: sensitivity of the leak correction (slow)", "sensitivity_analysis.py"),
         ("Finding 6: train uplift models and score held-out users (slow)", "uplift_analysis.py"),
         ("Finding 6: grade the rankings", "uplift_evaluate.py"),
         ("Finding 7: money", "money_analysis.py"),
         ("Finding 8: Iowa county-week panel", "iowa_panel.py"),
         ("Finding 8: simulated geo tests (slow)", "geo_simulation.py"),
         ("Finding 9: holdout sizing", "plan_analysis.py"),
+        ("Finding 9: budget-cut test proposal", "budget_test_plan.py"),
     ]
     for label, script in steps:
         if args.skip_slow and script in SLOW:

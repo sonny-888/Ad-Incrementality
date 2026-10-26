@@ -25,7 +25,7 @@
  },
  "finding_4_effect_of_seeing_an_ad": {
   "conversion_effect_points": "+2.89 points",
-  "real_multiple": "2.2x"
+  "causal_multiple": "2.2x"
  },
  "finding_5_credited_vs_caused": {
   "caused_per_100": "54",
@@ -44,7 +44,7 @@
   "assumed_roas": "8",
   "assumed_margin": "30%",
   "dashboard_profit_per_pound": "+£1.40",
-  "real_profit_per_pound": "+£0.29",
+  "incremental_profit_per_pound": "+£0.29",
   "best_half_profit_per_pound": "+£1.16",
   "other_half_profit_per_pound": "-£0.58",
   "profit_multiple_after_cut": "2.0x",
@@ -57,6 +57,20 @@
   "causalimpact_style_false_alarms": "10% to 18%",
   "best_design_min_detectable_lift": "9%",
   "simulated_tests": "2,700"
+ },
+ "sensitivity": {
+  "adjusted_specifications": "7",
+  "conversion_adjusted_range": "+50% to +56%",
+  "visit_adjusted_range": "+19% to +20%",
+  "caused_per_100_adjusted_range": "51 to 58",
+  "weighted_max_abs_smd": "0.002"
+ },
+ "budget_test": {
+  "segment_share_of_users": "89%",
+  "predicted_lift": "+55%",
+  "predicted_lift_interval": "+33% to +76%",
+  "break_even_lift": "+131%",
+  "users_needed": "0.4 million"
  },
  "finding_9_plan": {
   "users_for_10pct_conversion_lift_10pct_holdout": "4.9 million",

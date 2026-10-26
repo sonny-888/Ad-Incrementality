@@ -3,8 +3,9 @@
     py python/scripts/lift_aipw.py
 
 Why: finding 1 found a small link between features and treatment, and the raw and linear-adjusted lift disagree.
-The features were logged at treatment assignment (Diemert et al. 2021), so adjusting for them is valid. AIPW with
-gradient-boosted models and 2-fold cross-fitting allows the link to be non-linear.
+The features were logged at treatment assignment (Diemert et al. 2021), so adjusting for them can't pick up an
+effect of the ads. AIPW with gradient-boosted models and 2-fold cross-fitting allows the link to be non-linear.
+sensitivity_analysis.py checks how much the answer depends on these modelling choices.
 
 Reads data/processed/criteo_uplift.parquet and writes results/lift_aipw.json. Takes several minutes.
 """

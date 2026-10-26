@@ -85,7 +85,9 @@ buyers for visits at a quarter of spend (+8 points, 3 to 13), but trails for con
 
 ### 3. What to recommend
 
-- **Concentrate spend.** The bulk of the ads' effect comes from a minority of users and ad views.
+- **Test concentrating spend.** The bulk of the estimated effect comes from a minority of users and ad views, which
+  suggests moving spend towards them. Whether that holds once auction prices, ad frequency and audience mix respond
+  is a question for a holdout test (finding 9 proposes one).
 - **Start with the simple model.** A likely-buyer ranking is as good as an uplift model for conversions here, and
   simpler to build, explain and maintain.
 - **Use uplift modelling where it earns its keep:** visits, or very tight budgets. And test any switch with a holdout

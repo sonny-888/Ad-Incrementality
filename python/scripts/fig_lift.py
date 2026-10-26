@@ -1,8 +1,10 @@
-"""Charts for findings 2 to 4: naive view vs the ad's real effect, and raw vs adjusted lift.
+"""Charts for findings 2 to 4: naive view vs the ad's estimated causal effect, raw vs adjusted lift, and how much the
+adjusted lift depends on the adjustment method.
 
     py python/scripts/fig_lift.py
 
-Reads results/lift.json (lift_analysis.py) and results/lift_aipw.json (lift_aipw.py).
+Reads results/lift.json (lift_analysis.py), results/lift_aipw.json (lift_aipw.py) and results/sensitivity.json
+(sensitivity_analysis.py).
 """
 
 from __future__ import annotations
@@ -18,6 +20,7 @@ from incrementality.style import PAL, apply, finish
 ROOT = Path(__file__).resolve().parents[2]
 LIFT = json.loads((ROOT / "results" / "lift.json").read_text(encoding="utf-8"))
 AIPW = json.loads((ROOT / "results" / "lift_aipw.json").read_text(encoding="utf-8"))
+SENS = json.loads((ROOT / "results" / "sensitivity.json").read_text(encoding="utf-8"))
 OUT = ROOT / "figures" / "lift"
 
 
@@ -56,7 +59,7 @@ def naive_vs_caused(path: Path) -> None:
     ax.set_ylim(-0.6, 1.6)
     ax.set_axisbelow(True)
 
-    finish(fig, ax, f"Seeing an ad looks like a {naive_x:.0f}x boost. The real effect is {true_x:.1f}x",
+    finish(fig, ax, f"Seeing an ad looks like a {naive_x:.0f}x boost. The estimated causal effect is {true_x:.1f}x",
            f"Users who saw an ad were already {baseline / unexposed:.0f}x more likely to buy. "
            "The test separates that from the ad.",
            path, left=0.17, top=0.78,
@@ -110,8 +113,46 @@ def raw_vs_adjusted(path: Path) -> None:
     plt.close(fig)
 
 
+def sensitivity(path: Path) -> None:
+    """Conversion lift under every specification in results/sensitivity.json; the preferred estimate highlighted."""
+    rows = [r for r in SENS["rows"] if r["outcome"] == "conversion"][::-1]
+    preferred = "Doubly robust, gradient boosting"
+    short = lambda spec: spec.replace("gradient boosting", "boosting").replace("logistic regression", "logistic")
+    fig, ax = plt.subplots(figsize=(10, 5.4))
+    for y, r in enumerate(rows):
+        color = PAL["primary"] if r["specification"] == preferred else (
+            PAL["context"] if r["specification"] == "Raw difference" else PAL["muted"])
+        if r["lo"] is not None:
+            ax.hlines(y, r["lo"], r["hi"], color=color, lw=2)
+        ax.scatter(r["lift"], y, s=48, color=color, edgecolor=PAL["surface"], linewidth=1.5, zorder=3)
+        ax.text((r["hi"] if r["lo"] is not None else r["lift"]) + 0.01, y, f"{r['lift']:+.0%}", va="center",
+                fontsize=9, color=PAL["ink"] if r["specification"] == preferred else PAL["ink_2"])
+    ax.set_yticks(range(len(rows)), [short(r["specification"]) + (" (preferred)" if r["specification"] == preferred
+                                                                   else "") for r in rows])
+    ss = SENS["summary"]["conversion"]
+    ax.axvspan(ss["adjusted_min"], ss["adjusted_max"], color=PAL["primary"], alpha=0.08, lw=0)
+    ax.xaxis.set_major_formatter(lambda v, _: f"{v:.0%}")
+    ax.set_xlim(0, max(r["hi"] or r["lift"] for r in rows) + 0.1)
+    ax.set_xlabel("Conversion lift for the whole treatment group vs control (relative), with 95% interval")
+    ax.grid(axis="y", visible=False)
+    ax.grid(axis="x", visible=True)
+    ax.set_axisbelow(True)
+    fig.subplots_adjust(right=0.95)
+    b = SENS["balance"]
+    n = len(rows) - 1
+    finish(fig, ax, f"Any of {n} adjustment methods puts conversion lift at {ss['adjusted_min']:+.0%} to "
+           f"{ss['adjusted_max']:+.0%}",
+           f"The raw difference reads {ss['raw']:+.0%}. Weighting by the fitted chance of treatment shrinks the largest "
+           f"feature gap\nfrom {b['raw_max_abs_smd']:.3f} to "
+           f"{max(b['boosting_weighted_max_abs_smd'], b['logistic_weighted_max_abs_smd']):.3f} standard deviations. "
+           "Outcome-only models have no interval here.",
+           path, left=0.28, top=0.76)
+    plt.close(fig)
+
+
 if __name__ == "__main__":
     apply()
     naive_vs_caused(OUT / "naive_vs_caused.png")
     raw_vs_adjusted(OUT / "raw_vs_adjusted.png")
-    print("wrote figures/lift/naive_vs_caused.png, figures/lift/raw_vs_adjusted.png")
+    sensitivity(OUT / "sensitivity.png")
+    print("wrote figures/lift/naive_vs_caused.png, figures/lift/raw_vs_adjusted.png, figures/lift/sensitivity.png")

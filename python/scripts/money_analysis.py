@@ -55,7 +55,7 @@ def main() -> None:
         p_all, p_top, p_rest = (profit_per_pound(iroas * k, margin) for k in (1, eff_top, eff_rest))
         return {
             "dashboard_profit_per_pound": roas * margin - 1,
-            "real_profit_per_pound": interval(p_all),
+            "incremental_profit_per_pound": interval(p_all),
             "best_half_profit_per_pound": interval(p_top),
             "other_half_profit_per_pound": interval(p_rest),
             "incremental_roas": interval(iroas),
@@ -66,7 +66,7 @@ def main() -> None:
 
     base = scenario(ASSUMED_ROAS, ASSUMED_MARGIN)
     grid = {f"{r}x_{int(m * 100)}pct": {k: base_k for k, base_k in scenario(r, m).items()
-                                       if k in ("dashboard_profit_per_pound", "real_profit_per_pound",
+                                       if k in ("dashboard_profit_per_pound", "incremental_profit_per_pound",
                                                 "other_half_profit_per_pound")}
             for r in ROAS_GRID for m in MARGIN_GRID}
     breakeven = {f"{int(m * 100)}pct": {
@@ -88,7 +88,7 @@ def main() -> None:
 
     f = lambda d: f"{d['estimate']:+.2f} ({d['lo']:+.2f} to {d['hi']:+.2f})"
     print(f"Assumed: dashboard ROAS {ASSUMED_ROAS}, margin {ASSUMED_MARGIN:.0%} (illustrative)")
-    print(f"Profit per pound: dashboard {base['dashboard_profit_per_pound']:+.2f} | real {f(base['real_profit_per_pound'])}"
+    print(f"Profit per pound: dashboard {base['dashboard_profit_per_pound']:+.2f} | incremental {f(base['incremental_profit_per_pound'])}"
           f" | best half {f(base['best_half_profit_per_pound'])} | other half {f(base['other_half_profit_per_pound'])}")
     print(f"Cut the other half: profit x{base['profit_after_cut_vs_now']['estimate']:.2f} "
           f"({base['profit_after_cut_vs_now']['lo']:.2f} to {base['profit_after_cut_vs_now']['hi']:.2f}), "

@@ -37,8 +37,17 @@ def millions(v: float) -> str:
 
 
 def facts() -> dict[str, dict[str, str]]:
-    exp, lift, aipw, up, money, geo, plan, panel = (
-        _load(n) for n in ["experiment_checks", "lift", "lift_aipw", "uplift", "money", "geo", "plan", "iowa_panel"])
+    exp, lift, aipw, up, money, geo, plan, panel, sens, budget = (
+        _load(n) for n in ["experiment_checks", "lift", "lift_aipw", "uplift", "money", "geo", "plan", "iowa_panel",
+                           "sensitivity", "budget_test"])
+    ss, bt = sens["summary"], budget["outcomes"]["conversion"]
+    adjusted = [r for r in sens["rows"] if r["outcome"] == "conversion" and r["specification"] != "Raw difference"]
+    n_adjusted = len(adjusted)
+    # For a fixed share of users who saw an ad, the caused share is proportional to the whole-group lift, so each
+    # specification's caused share is scaled from the doubly robust estimate of its own model family (boosting for Lin).
+    ref = {r["family"]: r for r in adjusted if r["caused_share"] is not None}
+    caused_range = [r["lift"] * ref.get(r["family"], ref["boosting"])["caused_share"]
+                    / ref.get(r["family"], ref["boosting"])["lift"] for r in adjusted]
     conv, visit = lift["conversion"], lift["visit"]
     a_conv, a_visit = aipw["conversion"], aipw["visit"]
     resp_half = lambda o: next(s for s in up[o]["models"]["response"]["spend_capture"] if s["spend_share"] == 0.5)
@@ -75,7 +84,7 @@ def facts() -> dict[str, dict[str, str]]:
         },
         "finding_4_effect_of_seeing_an_ad": {
             "conversion_effect_points": f"+{a_conv['cace']['estimate'] * 100:.2f} points",
-            "real_multiple": f"{a_conv['rate_exposed'] / a_conv['baseline']:.1f}x",
+            "causal_multiple": f"{a_conv['rate_exposed'] / a_conv['baseline']:.1f}x",
         },
         "finding_5_credited_vs_caused": {
             "caused_per_100": f"{round(100 * a_conv['caused_share'])}",
@@ -94,7 +103,7 @@ def facts() -> dict[str, dict[str, str]]:
             "assumed_roas": f"{money['assumptions']['attributed_roas']:.0f}",
             "assumed_margin": pct(money["assumptions"]["margin"]),
             "dashboard_profit_per_pound": pounds(money["base"]["dashboard_profit_per_pound"]),
-            "real_profit_per_pound": pounds(money["base"]["real_profit_per_pound"]["estimate"]),
+            "incremental_profit_per_pound": pounds(money["base"]["incremental_profit_per_pound"]["estimate"]),
             "best_half_profit_per_pound": pounds(money["base"]["best_half_profit_per_pound"]["estimate"]),
             "other_half_profit_per_pound": pounds(money["base"]["other_half_profit_per_pound"]["estimate"]),
             "profit_multiple_after_cut": f"{money['base']['profit_after_cut_vs_now']['estimate']:.1f}x",
@@ -107,6 +116,21 @@ def facts() -> dict[str, dict[str, str]]:
             "causalimpact_style_false_alarms": f"{pct(min(fa_range('structural_ts')))} to {pct(max(fa_range('structural_ts')))}",
             "best_design_min_detectable_lift": pct(best_geo),
             "simulated_tests": f"{sum(c['runs'] for c in geo['methods']['did'].values()):,}",
+        },
+        "sensitivity": {
+            "adjusted_specifications": str(n_adjusted),
+            "conversion_adjusted_range": f"{signed_pct(ss['conversion']['adjusted_min'])} to "
+                                         f"{signed_pct(ss['conversion']['adjusted_max'])}",
+            "visit_adjusted_range": f"{signed_pct(ss['visit']['adjusted_min'])} to {signed_pct(ss['visit']['adjusted_max'])}",
+            "caused_per_100_adjusted_range": f"{round(100 * min(caused_range))} to {round(100 * max(caused_range))}",
+            "weighted_max_abs_smd": f"{max(sens['balance']['boosting_weighted_max_abs_smd'], sens['balance']['logistic_weighted_max_abs_smd']):.3f}",
+        },
+        "budget_test": {
+            "segment_share_of_users": pct(bt["segment_share_of_users"]),
+            "predicted_lift": signed_pct(bt["predicted_lift"]),
+            "predicted_lift_interval": f"{signed_pct(bt['predicted_lift_lo'])} to {signed_pct(bt['predicted_lift_hi'])}",
+            "break_even_lift": signed_pct(bt["break_even_lift"]),
+            "users_needed": millions(bt["users_needed"]),
         },
         "finding_9_plan": {
             "users_for_10pct_conversion_lift_10pct_holdout": millions(conv_plan["0.10"]["0.10"]),

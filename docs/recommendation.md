@@ -1,7 +1,16 @@
 # Finding 9: Recommendation. A test-and-learn measurement plan
 
-Sizing numbers come from `results/plan.json` (`python/scripts/plan_analysis.py`). Chart: `figures/plan/holdout_sizing.png`.
-Everything else draws on findings 1 to 8.
+Sizing numbers come from `results/plan.json` (`python/scripts/plan_analysis.py`) and `results/budget_test.json`
+(`python/scripts/budget_test_plan.py`). Chart: `figures/plan/holdout_sizing.png`. Everything else draws on findings
+1 to 8.
+
+## The three decisions this project informs
+
+| Decision | Answer from this project | Confidence |
+|---|---|---|
+| **Should we trust attribution?** | No, not on its own. In this benchmark an estimated 54 of every 100 view-through-credited conversions were caused by the ads, so attributed ROAS overstates incremental ROAS by about 1.9x | Randomised test; holds across the adjustment methods we tried |
+| **Should we move budget?** | Probably, but test first. In the scenario (ROAS 8, margin 30%) the weaker half of spend loses about 58p per £1 | A model-based hypothesis; production effects can change it |
+| **Which experiment next?** | A 50/50 holdout inside the weaker-half segment, then an always-on 10% holdout | Sized below from the test's own rates |
 
 ## What we found, in one page
 
@@ -9,21 +18,21 @@ Everything else draws on findings 1 to 8.
 |---|---|---|
 | 1 | The test was sound, with a small leftover imbalance from merging several advertisers' tests | Classifier AUC 0.509 (placebo 0.499) |
 | 2 | The dashboard view (saw an ad vs didn't) is wildly inflated | Looks like 41x; those users were already 19x likelier to buy |
-| 3 | Real lift for the whole targeted group, corrected for the imbalance | Conversions +52%, visits +20% (raw: +59%, +27%) |
-| 4 | Real effect of seeing an ad | Conversion rate 2.49% to 5.38%: 2.2x, not 41x |
-| 5 | Credited vs caused | **54 of every 100** credited conversions were caused by ads (50 to 58) |
+| 3 | Estimated lift for the whole treated group, adjusted for the imbalance | Conversions +52%, visits +20% (raw: +59%, +27%) |
+| 4 | Estimated causal effect of seeing an ad (CACE) | Conversion rate 2.49% to 5.38%: 2.2x, not 41x |
+| 5 | Credited vs caused | An estimated **54 of every 100** view-through-credited conversions were caused by ads (50 to 58) |
 | 6 | Who is persuaded | Top 20% of users hold 91% of the effect; a simple likely-buyer model finds them as well as uplift models |
-| 7 | Worth the money (illustrative ROAS 8, margin 30%) | Each £1 looks like +£1.40, really +£0.29; the weaker half of spend loses about 58p per £1 |
-| 8 | Measuring by region | Two simple methods stay honest; even 20 counties for 12 weeks only detect about a 9% lift |
+| 7 | Worth the money (scenario: ROAS 8, margin 30%) | Each £1 looks like +£1.40 but makes an incremental +£0.29; the weaker half of spend loses about 58p per £1 |
+| 8 | Measuring by region (methods benchmark: real sales, simulated campaigns) | Two simple methods stay honest; even 20 counties for 12 weeks only detect about a 9% lift |
 | 9 | Sizing a holdout | Seeing a 10% conversion lift with a 10% holdout takes about 4.9 million users |
 
 ## Recommendations
 
 ### 1. Judge retargeting on what it causes, not what it is credited with
 
-Real return on ad spend = dashboard ROAS x caused share. In this test the caused share was 54%, so dashboards
-overstate retargeting's return by about 1.9x. **With a 30% margin, a campaign needs a dashboard ROAS above about 6 to
-break even** (finding 7). Report incremental ROAS next to attributed ROAS in every campaign review.
+Incremental ROAS = dashboard ROAS x caused share. In this benchmark the estimated caused share was 54%, so
+dashboards overstate retargeting's return by about 1.9x. **With a 30% margin, a campaign would need a dashboard ROAS
+above about 6 to break even** (finding 7). Report incremental ROAS next to attributed ROAS in every campaign review.
 
 ### 2. Keep an always-on holdout
 
@@ -49,9 +58,23 @@ current instead of relying on a one-off test.
 
 ### 3. Test the budget cut before making it
 
-Finding 7 says the weaker half of spend probably loses money. Before cutting it, **randomise the users in that half
-into "ads" and "no ads"** and measure what is lost. If the loss is close to the predicted 16% of caused conversions
-for half the spend, cut it. This turns a model's suggestion into a measured result.
+Finding 7 suggests the weaker half of spend loses money, but that comes from scoring users in a past test. Changing
+targeting can move auction prices, ad frequency and who is in the audience (finding 7 lists these), so the cut needs
+its own test:
+
+| | Proposal |
+|---|---|
+| Segment | Users ranked lowest by the likely-buyer model, up to half of today's ad views: about 89% of users |
+| Design | Split the segment 50/50 into "keep ads" and "no ads"; leave the best half unchanged |
+| Primary metric | Relative conversion lift in the segment (no ads as baseline); visits as the early read |
+| Prediction | +55% (95% interval +33% to +76%) |
+| Break-even | The segment's spend pays for itself only at a lift of about +131% (scenario: ROAS 8, margin 30%) |
+| Decision rule | Cut the segment's spend if the one-sided 95% upper bound on lift is below break-even; otherwise keep it and re-rank |
+| Size | About 0.4 million users in the segment gives an 80% chance of reaching "cut" if the prediction is right |
+| Guardrails | Total conversions, cost per ad view and ads per user in the best half, so price and frequency shifts show up |
+
+Holding out a weak segment costs little: the model expects it to bring about 16% of the conversions the ads cause.
+This turns a model's suggestion into a measured result.
 
 ### 4. Target with the simple model first
 

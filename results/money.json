@@ -30,7 +30,7 @@
  },
  "base": {
   "dashboard_profit_per_pound": 1.4,
-  "real_profit_per_pound": {
+  "incremental_profit_per_pound": {
    "estimate": 0.28789206406500656,
    "lo": 0.19436605410487645,
    "hi": 0.3811934110831501
@@ -64,7 +64,7 @@
  "grid": {
   "4x_20pct": {
    "dashboard_profit_per_pound": -0.19999999999999996,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": -0.5707026453116645,
     "lo": -0.6018779819650412,
     "hi": -0.5396021963056166
@@ -77,7 +77,7 @@
   },
   "4x_30pct": {
    "dashboard_profit_per_pound": 0.19999999999999996,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": -0.3560539679674967,
     "lo": -0.4028169729475618,
     "hi": -0.30940329445842496
@@ -90,7 +90,7 @@
   },
   "4x_40pct": {
    "dashboard_profit_per_pound": 0.6000000000000001,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": -0.1414052906233289,
     "lo": -0.20375596393008227,
     "hi": -0.07920439261123324
@@ -103,7 +103,7 @@
   },
   "4x_50pct": {
    "dashboard_profit_per_pound": 1.0,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": 0.07324338672083885,
     "lo": -0.004694954912602856,
     "hi": 0.15099450923595836
@@ -116,7 +116,7 @@
   },
   "6x_20pct": {
    "dashboard_profit_per_pound": 0.20000000000000018,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": -0.35605396796749667,
     "lo": -0.4028169729475618,
     "hi": -0.30940329445842496
@@ -129,7 +129,7 @@
   },
   "6x_30pct": {
    "dashboard_profit_per_pound": 0.7999999999999998,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": -0.03408095195124505,
     "lo": -0.10422545942134262,
     "hi": 0.035895058312362386
@@ -142,7 +142,7 @@
   },
   "6x_40pct": {
    "dashboard_profit_per_pound": 1.4000000000000004,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": 0.28789206406500667,
     "lo": 0.19436605410487645,
     "hi": 0.3811934110831501
@@ -155,7 +155,7 @@
   },
   "6x_50pct": {
    "dashboard_profit_per_pound": 2.0,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": 0.6098650800812583,
     "lo": 0.4929575676310956,
     "hi": 0.7264917638539375
@@ -168,7 +168,7 @@
   },
   "8x_20pct": {
    "dashboard_profit_per_pound": 0.6000000000000001,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": -0.1414052906233289,
     "lo": -0.20375596393008227,
     "hi": -0.07920439261123324
@@ -181,7 +181,7 @@
   },
   "8x_30pct": {
    "dashboard_profit_per_pound": 1.4,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": 0.28789206406500656,
     "lo": 0.19436605410487645,
     "hi": 0.3811934110831501
@@ -194,7 +194,7 @@
   },
   "8x_40pct": {
    "dashboard_profit_per_pound": 2.2,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": 0.7171894187533422,
     "lo": 0.5924880721398355,
     "hi": 0.8415912147775335
@@ -207,7 +207,7 @@
   },
   "8x_50pct": {
    "dashboard_profit_per_pound": 3.0,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": 1.1464867734416777,
     "lo": 0.9906100901747943,
     "hi": 1.3019890184719167
@@ -220,7 +220,7 @@
   },
   "10x_20pct": {
    "dashboard_profit_per_pound": 1.0,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": 0.07324338672083897,
     "lo": -0.0046949549126027446,
     "hi": 0.15099450923595836
@@ -233,7 +233,7 @@
   },
   "10x_30pct": {
    "dashboard_profit_per_pound": 2.0,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": 0.6098650800812583,
     "lo": 0.4929575676310958,
     "hi": 0.7264917638539375
@@ -246,7 +246,7 @@
   },
   "10x_40pct": {
    "dashboard_profit_per_pound": 3.0,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": 1.146486773441678,
     "lo": 0.9906100901747945,
     "hi": 1.3019890184719167
@@ -259,7 +259,7 @@
   },
   "10x_50pct": {
    "dashboard_profit_per_pound": 4.0,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": 1.6831084668020972,
     "lo": 1.488262612718493,
     "hi": 1.8774862730898958
@@ -272,7 +272,7 @@
   },
   "12x_20pct": {
    "dashboard_profit_per_pound": 1.4000000000000004,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": 0.28789206406500667,
     "lo": 0.19436605410487645,
     "hi": 0.3811934110831501
@@ -285,7 +285,7 @@
   },
   "12x_30pct": {
    "dashboard_profit_per_pound": 2.5999999999999996,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": 0.9318380960975099,
     "lo": 0.7915490811573148,
     "hi": 1.0717901166247248
@@ -298,7 +298,7 @@
   },
   "12x_40pct": {
    "dashboard_profit_per_pound": 3.8000000000000007,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": 1.5757841281300133,
     "lo": 1.3887321082097528,
     "hi": 1.7623868221663002
@@ -311,7 +311,7 @@
   },
   "12x_50pct": {
    "dashboard_profit_per_pound": 5.0,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": 2.2197301601625163,
     "lo": 1.9859151352621913,
     "hi": 2.452983527707875
@@ -324,7 +324,7 @@
   },
   "15x_20pct": {
    "dashboard_profit_per_pound": 2.0,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": 0.6098650800812584,
     "lo": 0.4929575676310958,
     "hi": 0.7264917638539375
@@ -337,7 +337,7 @@
   },
   "15x_30pct": {
    "dashboard_profit_per_pound": 3.5,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": 1.4147976201218873,
     "lo": 1.2394363514466433,
     "hi": 1.5897376457809058
@@ -350,7 +350,7 @@
   },
   "15x_40pct": {
    "dashboard_profit_per_pound": 5.0,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": 2.219730160162517,
     "lo": 1.9859151352621918,
     "hi": 2.452983527707875
@@ -363,7 +363,7 @@
   },
   "15x_50pct": {
    "dashboard_profit_per_pound": 6.5,
-   "real_profit_per_pound": {
+   "incremental_profit_per_pound": {
     "estimate": 3.024662700203146,
     "lo": 2.7323939190777393,
     "hi": 3.3162294096348433

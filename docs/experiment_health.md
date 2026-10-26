@@ -29,7 +29,9 @@ Criteo's benchmark paper (Diemert et al. 2021, arXiv 2111.10106) explains the ba
 
 Our check is far larger (1,000,000 users, plus a placebo) and finds a small leak still there. We can't tell which step
 of building the file left it; we only see that it exists. Because the features are pre-treatment, adjusting for them
-is valid, and that is what we do.
+cannot introduce bias from the ads themselves, so the adjusted figures are our preferred estimates. This rests on an
+assumption we cannot test: that the leak runs through f0 to f11, which the file records, and not through something it
+doesn't. Finding 3 shows how much the answer moves across several adjustment methods.
 
 The sample ratio check also needs care. The treated share matches 85% to within 2 users, which is closer than chance
 would usually give. The most likely explanation is that the ratio was fixed when Criteo sub-sampled the file. So this

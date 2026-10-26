@@ -1,0 +1,178 @@
+{
+ "rows": [
+  {
+   "outcome": "visit",
+   "specification": "Raw difference",
+   "family": "none",
+   "lift": 0.27073675539019604,
+   "lo": 0.26156617437512963,
+   "hi": 0.2799739992231647,
+   "caused_share": null
+  },
+  {
+   "outcome": "visit",
+   "specification": "Linear adjustment (Lin)",
+   "family": "linear",
+   "lift": 0.20245047157605361,
+   "lo": 0.19571619226922535,
+   "hi": 0.20918475088288185,
+   "caused_share": null
+  },
+  {
+   "outcome": "conversion",
+   "specification": "Raw difference",
+   "family": "none",
+   "lift": 0.5944881177252619,
+   "lo": 0.5436975782271103,
+   "hi": 0.6469497610321502,
+   "caused_share": 0.5942994260899288
+  },
+  {
+   "outcome": "conversion",
+   "specification": "Linear adjustment (Lin)",
+   "family": "linear",
+   "lift": 0.5169614807184835,
+   "lo": 0.4825931102063635,
+   "hi": 0.5513298512306036,
+   "caused_share": null
+  },
+  {
+   "outcome": "visit",
+   "specification": "Doubly robust, gradient boosting",
+   "family": "boosting",
+   "lift": 0.1955944959080321,
+   "lo": 0.18904916498255936,
+   "hi": 0.20213982683350484,
+   "caused_share": null
+  },
+  {
+   "outcome": "visit",
+   "specification": "Weighting only (IPW), gradient boosting",
+   "family": "boosting",
+   "lift": 0.2007973065913172,
+   "lo": 0.1927204882459955,
+   "hi": 0.20887412493663887,
+   "caused_share": null
+  },
+  {
+   "outcome": "visit",
+   "specification": "Outcome model only, gradient boosting",
+   "family": "boosting",
+   "lift": 0.19411508844018355,
+   "lo": null,
+   "hi": null,
+   "caused_share": null
+  },
+  {
+   "outcome": "conversion",
+   "specification": "Doubly robust, gradient boosting",
+   "family": "boosting",
+   "lift": 0.5249419363136844,
+   "lo": 0.4868802955541743,
+   "hi": 0.5630035770731944,
+   "caused_share": 0.5366159356509865
+  },
+  {
+   "outcome": "conversion",
+   "specification": "Weighting only (IPW), gradient boosting",
+   "family": "boosting",
+   "lift": 0.5122972996524204,
+   "lo": 0.4749378853789798,
+   "hi": 0.5496567139258611,
+   "caused_share": null
+  },
+  {
+   "outcome": "conversion",
+   "specification": "Outcome model only, gradient boosting",
+   "family": "boosting",
+   "lift": 0.5626307226169578,
+   "lo": null,
+   "hi": null,
+   "caused_share": null
+  },
+  {
+   "outcome": "visit",
+   "specification": "Doubly robust, logistic regression",
+   "family": "logistic",
+   "lift": 0.1869135378573866,
+   "lo": 0.18026596560235922,
+   "hi": 0.193561110112414,
+   "caused_share": null
+  },
+  {
+   "outcome": "visit",
+   "specification": "Weighting only (IPW), logistic regression",
+   "family": "logistic",
+   "lift": 0.20499929720114957,
+   "lo": 0.19700329500937103,
+   "hi": 0.21299529939292808,
+   "caused_share": null
+  },
+  {
+   "outcome": "visit",
+   "specification": "Outcome model only, logistic regression",
+   "family": "logistic",
+   "lift": 0.18685910272658318,
+   "lo": null,
+   "hi": null,
+   "caused_share": null
+  },
+  {
+   "outcome": "conversion",
+   "specification": "Doubly robust, logistic regression",
+   "family": "logistic",
+   "lift": 0.4997489273604827,
+   "lo": 0.4649013595938048,
+   "hi": 0.5345964951271607,
+   "caused_share": 0.5105885836628716
+  },
+  {
+   "outcome": "conversion",
+   "specification": "Weighting only (IPW), logistic regression",
+   "family": "logistic",
+   "lift": 0.5129030588631404,
+   "lo": 0.4762587524334298,
+   "hi": 0.549547365292851,
+   "caused_share": null
+  },
+  {
+   "outcome": "conversion",
+   "specification": "Outcome model only, logistic regression",
+   "family": "logistic",
+   "lift": 0.5032903167768321,
+   "lo": null,
+   "hi": null,
+   "caused_share": null
+  }
+ ],
+ "balance": {
+  "raw_max_abs_smd": 0.0488363470501265,
+  "boosting_weighted_max_abs_smd": 0.0022556087414624,
+  "boosting_propensity_p01_p99": [
+   0.8449927979436808,
+   0.8951143112025685
+  ],
+  "logistic_weighted_max_abs_smd": 0.0010779185794180695,
+  "logistic_propensity_p01_p99": [
+   0.8435505620120612,
+   0.8779976086013789
+  ]
+ },
+ "summary": {
+  "visit": {
+   "adjusted_min": 0.18685910272658318,
+   "adjusted_max": 0.20499929720114957,
+   "raw": 0.27073675539019604
+  },
+  "conversion": {
+   "adjusted_min": 0.4997489273604827,
+   "adjusted_max": 0.5626307226169578,
+   "raw": 0.5944881177252619
+  },
+  "caused_share_adjusted_range": [
+   0.5105885836628716,
+   0.5366159356509865
+  ]
+ },
+ "seed": 42
+}

@@ -15,8 +15,8 @@ CALCULATE ( SUM ( kpis[value] ), kpis[kpi] = "Caused per 100 credited conversion
 CALCULATE ( SUM ( kpis[value] ), kpis[kpi] = "Naive effect of seeing an ad (multiple)" )
 // Format: 0\x
 
-[Real Multiple] =
-CALCULATE ( SUM ( kpis[value] ), kpis[kpi] = "Real effect of seeing an ad (multiple)" )
+[Causal Multiple] =
+CALCULATE ( SUM ( kpis[value] ), kpis[kpi] = "Causal effect of seeing an ad (multiple)" )
 // Format: 0.0\x
 
 [Conversion Lift Adjusted] =
@@ -31,8 +31,8 @@ CALCULATE ( SUM ( kpis[value] ), kpis[kpi] = "Share of effect in top 20% of user
 CALCULATE ( SUM ( kpis[value] ), kpis[kpi] = "Half the spend keeps (conversions caused)" )
 // Format: 0%
 
-[Real Profit per Pound] =
-CALCULATE ( SUM ( kpis[value] ), kpis[kpi] = "Real profit per £1 of ads" )
+[Incremental Profit per Pound] =
+CALCULATE ( SUM ( kpis[value] ), kpis[kpi] = "Incremental profit per £1 of ads" )
 // Format: +£0.00;-£0.00;£0.00
 
 [Dashboard Profit per Pound] =

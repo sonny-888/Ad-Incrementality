@@ -113,11 +113,11 @@ MEASURES: list[tuple[str, str, str | None, str]] = [  # (name, display folder, f
     ("Caused per 100", "KPIs", "0", kpi("Caused per 100 credited conversions")),
     ("Anyway per 100", "KPIs", "0", "100 - [Caused per 100]"),
     ("Naive Multiple", "KPIs", r"0\x", kpi("Naive effect of seeing an ad (multiple)")),
-    ("Real Multiple", "KPIs", r"0.0\x", kpi("Real effect of seeing an ad (multiple)")),
+    ("Causal Multiple", "KPIs", r"0.0\x", kpi("Causal effect of seeing an ad (multiple)")),
     ("Conversion Lift Adjusted", "KPIs", SIGNED_PCT, kpi("Conversion lift, whole treated group")),
     ("Top 20 Share", "KPIs", PCT, kpi("Share of effect in top 20% of users")),
     ("Half Spend Keeps", "KPIs", PCT, kpi("Half the spend keeps (conversions caused)")),
-    ("Real Profit per Pound", "KPIs", GBP, kpi("Real profit per £1 of ads")),
+    ("Incremental Profit per Pound", "KPIs", GBP, kpi("Incremental profit per £1 of ads")),
     ("Dashboard Profit per Pound", "KPIs", GBP, kpi("Dashboard profit per £1 of ads")),
     ("Weaker Half Profit per Pound", "KPIs", GBP, kpi("Weaker half profit per £1")),
     ("Break Even ROAS", "KPIs", "0.0", kpi("Break-even dashboard ROAS, 30% margin")),
@@ -522,6 +522,7 @@ F = FACTS
 F2, F3, F4, F5 = (F[k] for k in ["finding_2_naive", "finding_3_itt", "finding_4_effect_of_seeing_an_ad",
                                   "finding_5_credited_vs_caused"])
 F6, F7, F8, F9 = (F[k] for k in ["finding_6_who_is_persuaded", "finding_7_money", "finding_8_geo", "finding_9_plan"])
+FS, FB = F["sensitivity"], F["budget_test"]
 KPI_NOTES = pd.read_csv(DATA / "kpis.csv").set_index("kpi")["note"].to_dict()
 CRITEO = (f"Criteo Uplift v2.1 (CC BY-NC-SA 4.0) · randomised test, {F['data']['criteo_users']} users · "
           "levels describe Criteo's sub-sampled benchmark file")
@@ -529,12 +530,14 @@ CRITEO = (f"Criteo Uplift v2.1 (CC BY-NC-SA 4.0) · randomised test, {F['data'][
 
 def page_overview() -> Page:
     p = Page("overview", "Overview", "Did the ads actually work?",
-             f"Only {F5['caused_per_100']} of every 100 conversions credited to retargeting were caused by it.",
-             f"Randomised test · {F['data']['criteo_users']} users · corrected for a small leak")
+             f"An estimated {F5['caused_per_100']} of every 100 conversions credited to retargeting "
+             "(view-through) were caused by it.",
+             f"Randomised test · {F['data']['criteo_users']} users · adjusted for a small leak")
     p.kpi_band([
-        ("Caused per 100 credited conversions", "Caused per 100", KPI_NOTES["Caused per 100 credited conversions"], ACCENT_TEXT),
+        ("Caused per 100 credited (estimated)", "Caused per 100", KPI_NOTES["Caused per 100 credited conversions"],
+         ACCENT_TEXT),
         ("Seeing an ad: dashboard view", "Naive Multiple", "Saw an ad vs didn't, as a dashboard shows", INK),
-        ("Seeing an ad: real effect", "Real Multiple", "From the randomised test", INK),
+        ("Seeing an ad: estimated causal effect", "Causal Multiple", "From the randomised test (CACE)", INK),
         ("Conversion lift, whole treated group", "Conversion Lift Adjusted",
          KPI_NOTES["Conversion lift, whole treated group"], INK),
     ])
@@ -545,7 +548,8 @@ def page_overview() -> Page:
                        named(mea("Rate Caused by Ad"), "Caused by the ad")]},
           objects={**axes(value_axis=False, inner_padding=40), **labels(precision=2), **legend(),
                    "dataPoint": series_fill({"Rate Without Ad Effect": CONTEXT, "Rate Caused by Ad": ACCENT})},
-          title=f"Seeing an ad looks like a {F2['naive_multiple']} boost. The real effect is {F4['real_multiple']}",
+          title=f"Seeing an ad looks like a {F2['naive_multiple']} boost. The estimated causal effect is "
+                f"{F4['causal_multiple']}",
           subtitle=f"Conversion rate · users who saw an ad were already {F2['baseline_multiple']} likelier to buy; "
                    "the test separates that from the ad",
           alt=f"Stacked bar: didn't see an ad {F2['unexposed_conversion_rate']}; saw an ad "
@@ -557,7 +561,8 @@ def page_overview() -> Page:
                    "dataPoint": [all_points({"fill": measure_color("Lift Bar Color")})]},
           title=f"Correcting the leak: conversion lift {F3['conversion_lift_raw']} raw, "
                 f"{F3['conversion_lift_adjusted']} adjusted",
-          subtitle="Whole treatment group vs control · features logged before any ad, so adjusting is valid",
+          subtitle=f"Whole treatment group vs control · preferred: adjusted for pre-treatment features; "
+                   f"{FS['adjusted_specifications']} adjusted specifications give {FS['conversion_adjusted_range']}",
           alt="Bar chart of conversion lift: raw difference, linear adjustment, doubly robust adjustment.")
     y, h = BAND["support"]
     p.add("overview_credited", "donutChart", gx(0), y, gw(5), h,
@@ -567,22 +572,24 @@ def page_overview() -> Page:
                    "labels": props(show=True, labelStyle="Data value", color=solid(INK_2), fontSize=9),
                    "slices": props(innerRadiusRatio=65),
                    "dataPoint": series_fill({"Caused per 100": ACCENT, "Anyway per 100": CONTEXT})},
-          title=f"Of every 100 credited conversions, {F5['caused_per_100']} were caused by the ads",
-          subtitle=f"95% interval {F5['caused_per_100_interval']} · attribution overstates return about "
+          title=f"Ads caused an estimated {F5['caused_per_100']} of 100 credited conversions",
+          subtitle=f"View-through credit · 95% interval {F5['caused_per_100_interval']}; {FS['caused_per_100_adjusted_range']}"
+                   f" across adjustment methods · attribution overstates return about "
                    f"{F5['attribution_overstatement']}",
           alt="Donut: of 100 conversions credited to ads, 54 caused by them and 46 that would have happened anyway.")
     p.note("overview_read", 5, 7, "support", "How to read this page", [
         "Criteo randomly blocked ads for 15% of users. Any difference between the groups was caused by the ads.",
         f"Users who saw an ad converted at {F2['exposed_conversion_rate']}; without it they'd have converted at "
         f"about {F2['baseline_conversion_rate']}. So ads work, but far less than a dashboard suggests.",
-        "The test had a small leftover imbalance from merging several advertisers' tests; every headline number "
-        "here is corrected for it (raw figures are shown for comparison).",
-        "→ Judge retargeting on what it causes: real ROAS = dashboard ROAS × caused share.",
+        "The test had a small leftover imbalance from merging several advertisers' tests. Headline numbers are "
+        "adjusted for it, assuming the 12 pre-treatment features capture it; raw figures are shown for comparison.",
+        "Estimates describe this benchmark file (Criteo sub-sampled it), not every retargeting campaign.",
+        "→ Judge retargeting on what it causes: incremental ROAS = dashboard ROAS × caused share.",
     ])
     p.decision_strip([
-        ("Finding", f"Only {F5['caused_per_100']} of every 100 conversions credited to retargeting were caused by it."),
+        ("Finding", f"An estimated {F5['caused_per_100']} of every 100 credited conversions were caused by the ads."),
         ("Evidence", f"Seeing an ad lifts conversion from {F2['baseline_conversion_rate']} to "
-                     f"{F2['exposed_conversion_rate']}: {F4['real_multiple']}, not {F2['naive_multiple']}."),
+                     f"{F2['exposed_conversion_rate']}: {F4['causal_multiple']}, not {F2['naive_multiple']}."),
         ("Interpretation", f"Attribution credits ads with keen shoppers' sales; return is overstated about "
                            f"{F5['attribution_overstatement']}."),
         ("Next action", "Report incremental ROAS next to attributed ROAS in every campaign review."),
@@ -593,15 +600,15 @@ def page_overview() -> Page:
 
 def page_targeting() -> Page:
     p = Page("targeting", "Targeting & money", "Who to target, and does it pay?",
-             f"Half the spend, aimed at likely buyers, keeps {F6['half_spend_keeps_conversions']} of the conversions "
-             "ads cause; the weaker half loses money.",
-             "2.8M held-out users · money figures illustrative (ROAS 8, margin 30%)")
+             f"Half the spend, aimed at likely buyers, keeps {F6['half_spend_keeps_conversions']} of caused "
+             "conversions; in the scenario, the weaker half loses money.",
+             "2.8M held-out users · money is scenario analysis (ROAS 8, margin 30%)")
     p.kpi_band([
         ("Effect in the top 20% of users", "Top 20 Share", "Of the ads' effect on conversions", INK),
         ("Half the spend keeps", "Half Spend Keeps", KPI_NOTES["Half the spend keeps (conversions caused)"], INK),
-        ("Real profit per £1 of ads", "Real Profit per Pound", KPI_NOTES["Real profit per £1 of ads"], INK),
-        ("Weaker half: profit per £1", "Weaker Half Profit per Pound", "The half of spend on the least likely buyers",
-         ACCENT_TEXT),
+        ("Incremental profit per £1 (scenario)", "Incremental Profit per Pound", KPI_NOTES["Incremental profit per £1 of ads"], INK),
+        ("Weaker half: profit per £1 (scenario)", "Weaker Half Profit per Pound",
+         "The half of spend on the least likely buyers", ACCENT_TEXT),
     ])
     y, h = BAND["primary"]
     p.add("targeting_curves", "lineChart", gx(0), y, gw(7), h,
@@ -629,9 +636,9 @@ def page_targeting() -> Page:
           objects={**table_style(), "values": table_style()["values"] + [cell_color("Profit All Spend",
                                                                                    "Profit All Spend Color")],
                    "subTotals": props(columnSubtotals=False, rowSubtotals=False)},
-          title="Real profit per £1 of ads, all spend",
-          subtitle="By dashboard ROAS (rows) and margin (columns) · red = loss · illustrative",
-          alt="Matrix of real profit per pound by dashboard ROAS and margin.")
+          title="Scenario: incremental profit per £1 of ads, all spend",
+          subtitle="By assumed dashboard ROAS (rows) and margin (columns) · red = loss",
+          alt="Matrix of incremental profit per pound (scenario) by dashboard ROAS and margin.")
     y, h = BAND["support"]
     p.add("targeting_weaker", "pivotTable", gx(0), y, gw(7), h,
           roles={"Rows": [named(col("money_sensitivity", "dashboard_roas"), "Dashboard ROAS")],
@@ -642,7 +649,8 @@ def page_targeting() -> Page:
                    "values": table_style()["values"] + [cell_color("Profit Weaker Half", "Profit Weaker Half Color")],
                    "subTotals": props(columnSubtotals=False, rowSubtotals=False)},
           title="The weaker half of spend loses money in 21 of 24 combinations",
-          subtitle="Real profit per £1 on the half of spend aimed at the least likely buyers · red = loss",
+          subtitle="Scenario: incremental profit per £1 on the half of spend aimed at the least likely buyers · "
+                   "red = loss",
           alt="Matrix of profit per pound for the weaker half of spend by dashboard ROAS and margin.")
     p.add("targeting_breakeven", "pivotTable", gx(7), y, gw(5), h,
           roles={"Rows": [named(col("break_even", "margin"), "Margin")],
@@ -658,9 +666,9 @@ def page_targeting() -> Page:
         ("Finding", f"A fifth of users hold {F6['top20_share_of_conversion_effect']} of the effect; half the spend "
                     f"keeps {F6['half_spend_keeps_conversions']}."),
         ("Evidence", "Uplift models graded on 2.8M held-out users by spend; a simple likely-buyer model matched them."),
-        ("Interpretation", f"The weaker half of spend makes {F7['other_half_profit_per_pound']} per £1 on "
-                           "illustrative numbers."),
-        ("Next action", "Test cutting the weaker half with its own holdout before cutting it."),
+        ("Interpretation", f"In the scenario the weaker half makes {F7['other_half_profit_per_pound']} per £1; "
+                           "a hypothesis, not a proven saving."),
+        ("Next action", f"Test it: a 50/50 holdout in that segment needs about {FB['users_needed']} users."),
     ])
     p.footer("Source: " + CRITEO + " · money uses stated assumptions · spend measured as ad views")
     return p
@@ -669,7 +677,7 @@ def page_targeting() -> Page:
 def page_measure() -> Page:
     p = Page("measure", "How to measure", "How to measure it next time",
              "User-level holdouts see small effects; geo tests on noisy sales only catch big ones.",
-             f"{F8['simulated_tests']} simulated campaigns on real Iowa sales")
+             f"Geo: methods benchmark, {F8['simulated_tests']} simulated campaigns on real Iowa sales")
     p.kpi_band([
         ("Users for a +10% conversion lift", "Holdout Users for 10pct Lift",
          KPI_NOTES["Users for a +10% conversion lift, 10% holdout"], INK),
@@ -893,6 +901,56 @@ def check_references_and_layout() -> int:
     return errors
 
 
+def _num(v: dict, default: float = 0) -> float:
+    return float(v["expr"]["Literal"]["Value"].rstrip("D")) if v else default
+
+
+def _wrapped_lines(text: str, size_pt: float, width_px: float, bold: bool = False) -> int:
+    """Lines a string wraps to, from average Segoe UI character widths (a rough, slightly cautious estimate)."""
+    char = size_pt * 96 / 72 * (0.49 if bold else 0.46)  # measured on this report's screenshots, plus a margin
+    lines, used = 1, 0.0
+    for word in text.split():
+        need = len(word) * char + (char if used else 0)
+        if used and used + need > width_px:
+            lines, used = lines + 1, len(word) * char
+        else:
+            used += need
+    return lines
+
+
+def check_text_fit() -> int:
+    """Text the schemas can't check: textbox text fits its box, visual titles and KPI labels fit on one line, and
+    subtitles (which wrap) take at most two."""
+    errors = 0
+    for vfile in sorted(RP_DIR.glob("definition/pages/*/visuals/*/visual.json")):
+        v = json.loads(vfile.read_text(encoding="utf-8"))
+        name, w, h = v["name"], v["position"]["width"], v["position"]["height"]
+        vis, vco = v["visual"], v["visual"].get("visualContainerObjects", {})
+        pad = vco.get("padding", [{"properties": {}}])[0]["properties"]
+        left, right, top, bottom = (_num(pad.get(k), 5) for k in ("left", "right", "top", "bottom"))
+        inner_w = w - left - right
+        if vis["visualType"] == "textbox" and not name.endswith(("_side", "_card")) and "_bar_" not in name:
+            height = 0.0
+            for para in vis["objects"]["general"][0]["properties"]["paragraphs"]:
+                for run in para["textRuns"]:
+                    size = float(run["textStyle"]["fontSize"].rstrip("pt"))
+                    bold = "Semibold" in run["textStyle"]["fontFamily"]
+                    height += _wrapped_lines(run["value"], size, inner_w, bold) * size * 96 / 72 * 1.36
+            if height > h - top - bottom + 1:
+                errors += 1
+                print(f"  {name}: text needs about {height:.0f}px, box has {h - top - bottom:.0f}px")
+        for key, size, bold, max_lines in (("title", 12, True, 1), ("subTitle", 9, False, 2)):
+            if key in vco and "text" in vco[key][0]["properties"]:
+                text = vco[key][0]["properties"]["text"]["expr"]["Literal"]["Value"][1:-1]
+                size = _num(vco[key][0]["properties"].get("fontSize"), size)
+                bold = bold and "fontFamily" not in vco[key][0]["properties"]
+                if _wrapped_lines(text, size, inner_w, bold) > max_lines:
+                    errors += 1
+                    print(f"  {name}: {key} needs more than {max_lines} line(s): {text!r}")
+    print(f"Text fit checks: {errors} error(s)")
+    return errors
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--validate", action="store_true")
@@ -906,7 +964,7 @@ def main() -> None:
     write_measures_reference()
     print(f"Wrote {PBI_DIR / (NAME + '.pbip')}  ({len(MEASURES)} measures, {len(TABLES) + 1} tables)")
     if args.validate:
-        raise SystemExit(1 if (validate_report() + check_references_and_layout()) else 0)
+        raise SystemExit(1 if (validate_report() + check_references_and_layout() + check_text_fit()) else 0)
 
 
 if __name__ == "__main__":

@@ -1,4 +1,4 @@
-"""Chart for finding 7: profit per pound of ad spend, dashboard view vs real, best half vs other half of spend.
+"""Chart for finding 7 (scenario analysis): profit per pound, dashboard view vs incremental, best vs other half.
 
     py python/scripts/fig_money.py
 
@@ -26,9 +26,11 @@ def profit_bars(path: Path) -> None:
     b, a = M["base"], M["assumptions"]
     rows = [
         ("Dashboard view", b["dashboard_profit_per_pound"], None, PAL["context"]),
-        ("Real, all spend", b["real_profit_per_pound"]["estimate"], b["real_profit_per_pound"], PAL["primary"]),
-        ("Real, best half", b["best_half_profit_per_pound"]["estimate"], b["best_half_profit_per_pound"], PAL["primary"]),
-        ("Real, other half", b["other_half_profit_per_pound"]["estimate"], b["other_half_profit_per_pound"], PAL["accent"]),
+        ("Incremental, all spend", b["incremental_profit_per_pound"]["estimate"], b["incremental_profit_per_pound"], PAL["primary"]),
+        ("Incremental, best half", b["best_half_profit_per_pound"]["estimate"], b["best_half_profit_per_pound"],
+         PAL["primary"]),
+        ("Incremental, other half", b["other_half_profit_per_pound"]["estimate"], b["other_half_profit_per_pound"],
+         PAL["accent"]),
     ]
     fig, ax = plt.subplots(figsize=(10, 4.8))
     ys = list(range(len(rows)))[::-1]
@@ -48,12 +50,12 @@ def profit_bars(path: Path) -> None:
     ax.grid(axis="x", visible=True)
     ax.set_axisbelow(True)
 
-    real, rest = b["real_profit_per_pound"]["estimate"], b["other_half_profit_per_pound"]["estimate"]
-    finish(fig, ax, f"Each £1 of ads looks like {money(b['dashboard_profit_per_pound'])[1:]} profit. "
-           f"Really it's {money(real)[1:]}, and half the spend loses money",
-           f"Illustrative: assumes a dashboard ROAS of {a['attributed_roas']:.0f} and a {a['margin']:.0%} margin. "
-           "Caused shares and the spend split come from the test.",
-           path, left=0.15, top=0.80,
+    incremental = b["incremental_profit_per_pound"]["estimate"]
+    finish(fig, ax, f"Scenario: £1 of ads looks like {money(b['dashboard_profit_per_pound'])[1:]} profit but makes "
+           f"{money(incremental)[1:]}, and half the spend loses money",
+           f"Scenario analysis, not observed profit: assumes a dashboard ROAS of {a['attributed_roas']:.0f} and a "
+           f"{a['margin']:.0%} margin.\nThe caused share and the spend split come from the test.",
+           path, left=0.15, top=0.76,
            source="Source: Criteo Uplift v2.1, 13,979,592 users; money figures use stated assumptions. "
                   "Spend measured as ad views.")
     plt.close(fig)

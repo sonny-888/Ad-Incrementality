@@ -4,7 +4,8 @@ import pytest
 import statsmodels.api as sm
 from linearmodels.iv import IV2SLS
 
-from incrementality.lift import aipw, complier_baseline, exposed_effect, lin_ate, rate_diff, ratio_of_effects
+from incrementality.lift import (aipw, complier_baseline, exposed_effect, ipw_effect, lin_ate, rate_diff,
+                                 ratio_of_effects, weighted_smd)
 
 
 def test_rate_diff_matches_hand_calculation():
@@ -75,6 +76,12 @@ def test_aipw_removes_confounding_that_biases_the_raw_difference():
     assert abs(res_y.estimate - true_itt) < 3 * res_y.se
     cace, se = ratio_of_effects(res_y, res_d)
     assert abs(cace - true_effect_on_exposed) < 3 * se
+
+    # Sensitivity checks: weighting alone also removes the bias, and the weights balance the confounder
+    ipw = ipw_effect(t, y, e)
+    assert abs(ipw.estimate - true_itt) < 3 * ipw.se
+    raw_gap = abs(x[t == 1, 0].mean() - x[t == 0, 0].mean())
+    assert abs(weighted_smd(x, t, e)[0]) < raw_gap / 4
 
 
 def test_exposed_effect_matches_2sls_point_and_interval():

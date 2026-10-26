@@ -148,6 +148,8 @@ class AIPWResult:
     estimate: float
     se: float
     psi: np.ndarray  # per-user influence values; their mean is the estimate
+    m1: np.ndarray | None = None  # out-of-fold predicted outcome if treated (kept for sensitivity analysis)
+    m0: np.ndarray | None = None  # ... and if control
 
     @property
     def lo(self) -> float:
@@ -159,8 +161,8 @@ class AIPWResult:
 
 
 def aipw(X: np.ndarray, t: np.ndarray, y: np.ndarray, folds: int = 2, seed: int = 0,
-         control_outcome_is_zero: bool = False, propensity: np.ndarray | None = None
-         ) -> tuple[AIPWResult, np.ndarray]:
+         control_outcome_is_zero: bool = False, propensity: np.ndarray | None = None,
+         learner: str = "boosting") -> tuple[AIPWResult, np.ndarray]:
     """Doubly robust (augmented inverse-propensity) effect of treatment, with cross-fitting.
 
     Models, fitted on the other folds and scored on each held-out fold:
@@ -170,11 +172,18 @@ def aipw(X: np.ndarray, t: np.ndarray, y: np.ndarray, folds: int = 2, seed: int 
     It is right if either the propensity or the outcome models are right, hence "doubly robust".
     `control_outcome_is_zero` sets m0 = 0 (used for exposure, which control users can never have).
     `propensity` lets callers reuse out-of-fold propensities across outcomes (use the same seed and folds).
+    `learner`: "boosting" (gradient boosting, flexible; the headline) or "logistic" (logistic regression on
+    standardised features, simple), so results can be checked against a different modelling choice.
     Returns the result and the out-of-fold propensities.
     """
     from sklearn.ensemble import HistGradientBoostingClassifier
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.pipeline import make_pipeline
+    from sklearn.preprocessing import StandardScaler
 
     def model():
+        if learner == "logistic":
+            return make_pipeline(StandardScaler(), LogisticRegression(max_iter=500))
         return HistGradientBoostingClassifier(max_iter=300, learning_rate=0.1, early_stopping=True, random_state=seed)
 
     n = len(t)
@@ -192,7 +201,24 @@ def aipw(X: np.ndarray, t: np.ndarray, y: np.ndarray, folds: int = 2, seed: int 
             m0[test] = model().fit(X[tr0], y[tr0]).predict_proba(X[test])[:, 1]
     e = np.clip(e, 0.01, 0.99)
     psi = m1 - m0 + t * (y - m1) / e - (1 - t) * (y - m0) / (1 - e)
-    return AIPWResult(float(psi.mean()), float(psi.std(ddof=1) / np.sqrt(n)), psi), e
+    return AIPWResult(float(psi.mean()), float(psi.std(ddof=1) / np.sqrt(n)), psi, m1, m0), e
+
+
+def ipw_effect(t: np.ndarray, y: np.ndarray, e: np.ndarray) -> AIPWResult:
+    """Inverse-propensity-weighted effect (Horvitz-Thompson form): reweights each group by its chance of being in it.
+    Uses only the propensity model, so it checks the doubly robust result from a different angle."""
+    psi = t * y / e - (1 - t) * y / (1 - e)
+    return AIPWResult(float(psi.mean()), float(psi.std(ddof=1) / np.sqrt(len(psi))), psi)
+
+
+def weighted_smd(X: np.ndarray, t: np.ndarray, e: np.ndarray) -> np.ndarray:
+    """Standardised mean differences after inverse-propensity weighting; near zero means the weights balance the
+    features, i.e. the propensity model captured how treatment depended on them."""
+    w = np.where(t == 1, 1 / e, 1 / (1 - e))
+    m1 = np.average(X[t == 1], axis=0, weights=w[t == 1])
+    m0 = np.average(X[t == 0], axis=0, weights=w[t == 0])
+    sd = np.sqrt((X[t == 1].var(axis=0) + X[t == 0].var(axis=0)) / 2)
+    return (m1 - m0) / sd
 
 
 def ratio_of_effects(num: AIPWResult, den: AIPWResult) -> tuple[float, float]:

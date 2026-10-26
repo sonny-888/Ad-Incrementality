@@ -52,8 +52,9 @@ def waffle(path: Path) -> None:
                        f"Without correcting the leak from\nfinding 1, it would read {raw}.",
              fontsize=9, color=PAL["ink_2"], va="center", linespacing=1.5)
 
-    finish(fig, ax, f"Only {caused} of every 100 conversions credited to ads were caused by them",
-           "Conversions by users who saw an ad, split using the randomised test (doubly robust estimate).",
+    finish(fig, ax, f"An estimated {caused} of every 100 credited conversions were caused by the ads",
+           "View-through attribution credits every conversion after an ad view.\nSplit by the randomised test "
+           "(doubly robust, under the test's assumptions).",
            path, top=0.80, left=0.08,
            source="Source: Criteo Uplift v2.1, 13,979,592 users. Shares describe this sub-sampled benchmark file.")
     plt.close(fig)

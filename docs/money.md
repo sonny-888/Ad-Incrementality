@@ -1,10 +1,11 @@
-# Finding 7: Is it worth the money?
+# Finding 7: Is it worth the money? (scenario analysis)
 
 Numbers come from `results/money.json` (`python/scripts/money_analysis.py`). Chart: `figures/money/profit_per_pound.png`.
 
 ## What comes from the test, and what is assumed
 
-The data has visits and conversions but **no prices or costs**, so money figures need two inputs:
+The data has visits and conversions but **no prices or costs**, so every money figure here is a **scenario**, not
+observed profit. Two inputs come from the test and two are assumed:
 
 | Input | Value used | Where it comes from |
 |---|---|---|
@@ -18,25 +19,26 @@ varied in the sensitivity tables below.
 
 ## The three formulas
 
-- **Real (incremental) ROAS** = dashboard ROAS x caused share. At 8 x 0.54, that is 4.3, not 8.
-- **Profit per £1 of spend** = real ROAS x margin - 1.
+- **Incremental ROAS (iROAS)** = dashboard ROAS x caused share. At 8 x 0.54, that is 4.3, not 8.
+- **Incremental profit per £1 of spend** = iROAS x margin - 1.
 - **Break-even dashboard ROAS** = 1 / (margin x caused share). Below this, the ads lose money.
 
-## Result at the illustrative assumptions (ROAS 8, margin 30%)
+## Scenario result (dashboard ROAS 8, margin 30%)
 
 | Profit per £1 of ad spend | Estimate (95% interval) |
 |---|---|
 | What the dashboard implies | +£1.40 |
-| **Real, all spend** | **+£0.29** (+£0.19 to +£0.38) |
-| Real, best half of spend | +£1.16 (+£0.94 to +£1.39) |
-| **Real, other half of spend** | **-£0.58** (-£0.74 to -£0.42) |
+| **Incremental, all spend** | **+£0.29** (+£0.19 to +£0.38) |
+| Incremental, best half of spend | +£1.16 (+£0.94 to +£1.39) |
+| **Incremental, other half of spend** | **-£0.58** (-£0.74 to -£0.42) |
 
-- The dashboard overstates profit nearly fivefold, because it credits the ads with conversions that would have
-  happened anyway.
+- In this scenario the dashboard overstates profit nearly fivefold, because it credits the ads with conversions that
+  would have happened anyway.
 - The campaign does make money overall, but only because the best half of spend carries the other half, which
   **loses about 58p of every £1**.
-- **Cutting the other half** halves spend, gives up about 16% of the conversions the ads cause, and roughly
-  **doubles profit** (x2.0, 1.6 to 2.7).
+- **Cutting the other half** would halve spend, give up an estimated 16% of the conversions the ads cause, and in this
+  scenario roughly **double incremental profit** (x2.0, 1.6 to 2.7). That is a hypothesis to test, not a proven
+  saving (see below).
 
 ## Break-even dashboard ROAS (no ROAS assumption needed)
 
@@ -52,7 +54,7 @@ The lowest dashboard ROAS at which the ads pay for themselves, by margin:
 **Rule of thumb from this test:** with a 30% margin, a retargeting campaign needs a dashboard ROAS above about 6 to
 break even, and the weaker half of its spend needs about 19, which few campaigns reach.
 
-## Sensitivity: real profit per £1
+## Sensitivity: incremental profit per £1 (scenario)
 
 **All spend** (losses in bold):
 
@@ -88,6 +90,21 @@ towards the best half pays under every assumption shown; only whether to cut out
   its own holdout test's caused share; the method carries over unchanged.
 - **Halving spend is a test, not a switch.** The 84% figure comes from ranking users in this test. Before cutting
   spend, run it as a holdout test of its own (finding 9 sets out how).
+
+## Why the cut is a hypothesis, not a saving
+
+The split of spend comes from scoring users in a past test. Changing who sees ads in production can change the
+things that analysis held fixed:
+
+- **Auction prices.** Stopping bids on a large audience changes how often the remaining bids win and what they pay.
+  Cost per ad view in the best half may rise.
+- **Frequency.** The same budget aimed at fewer users means more ads per user, and the extra views are likely to do
+  less than the first ones did.
+- **Audience composition.** The ranking was learned on this test's users. New users, seasonal shifts and model drift
+  change who lands in each half.
+- **Spend proxy.** Spend here is ad views; real cost per view varies by user, placement and time.
+
+So the recommendation is a randomised test inside the weaker half before any budget moves (finding 9).
 
 ## Plain-English glossary
 

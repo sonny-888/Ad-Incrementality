@@ -5,7 +5,8 @@
 - Report: report/report_content.md (the content pack, checked against results/ by the tests) -> styled HTML ->
   PDF. A small Markdown converter covers what the content pack uses: headings, paragraphs, lists, tables, bold,
   italics, code and [Figure N: path] markers.
-- Deck: 16:9 slides built here; every number comes from results/ (headline_facts.json and money.json).
+- Deck: 16:9 slides built here, seven core slides on three decisions plus an appendix; every number
+  comes from results/ (headline_facts.json and money.json).
 - PDFs are printed by Microsoft Edge in headless mode (a background process; nothing opens on screen).
 The HTML sources stay local (gitignored); only the PDFs are published.
 """
@@ -215,11 +216,22 @@ h1 { font-size: 34px; line-height: 1.2; font-weight: 600; margin: 10px 0 0; max-
 .plan .a { font-size: 22px; font-weight: 600; width: 520px; }
 .plan .e { font-size: 17px; color: var(--ink-2); flex: 1; }
 .links { margin-top: 36px; font-size: 22px; line-height: 1.8; color: var(--page); }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-top: 48px; }
+.dcard { background: var(--page); border-radius: 10px; padding: 28px 28px 30px; border-top: 6px solid var(--blue); }
+.dcard .q { font-size: 17px; color: var(--ink-2); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.dcard .a { font-size: 30px; font-weight: 600; margin: 14px 0 16px; line-height: 1.2; }
+.dcard .e { font-size: 19px; line-height: 1.5; color: var(--ink); }
+.caveats { display: flex; gap: 24px; margin-top: 30px; }
+.caveats div { flex: 1; font-size: 16px; line-height: 1.45; color: var(--ink-2); border-left: 3px solid var(--border);
+               padding-left: 14px; }
+.caveats b { color: var(--ink); font-weight: 600; }
+.nb { white-space: nowrap; }
 """
 
 
 def slide(body: str, n: int, source: str = "", dark: bool = False, cls: str = "") -> str:
     classes = " ".join(c for c in ["slide", "dark" if dark else "", cls] if c)
+    body = re.sub(r"([+-]£[\d.]+)", r'<span class="nb">\1</span>', body)  # keep "+£0.29" on one line
     foot = f'<div class="foot"><span>{source}</span><span>{n}</span></div>'
     return f'<div class="{classes}">{body}{foot}</div>'
 
@@ -235,60 +247,114 @@ def chart_slide(n: int, kicker: str, image: str, points: list[str], source: str,
 
 
 def build_deck() -> Path:
-    d, f1, f2, f3, f4, f5, f6, f7, f8, f9 = (FACTS[k] for k in [
+    d, f1, f2, f3, f4, f5, f6, f7, f8, f9, fs, fb = (FACTS[k] for k in [
         "data", "finding_1_experiment_health", "finding_2_naive", "finding_3_itt", "finding_4_effect_of_seeing_an_ad",
         "finding_5_credited_vs_caused", "finding_6_who_is_persuaded", "finding_7_money", "finding_8_geo",
-        "finding_9_plan"])
+        "finding_9_plan", "sensitivity", "budget_test"])
     be_best = f"{MONEY['break_even_attributed_roas']['30pct']['best_half']['estimate']:.1f}"
     criteo = "Source: Criteo Uplift v2.1 (Diemert et al.), CC BY-NC-SA 4.0 · levels describe the sub-sampled benchmark"
     iowa = "Source: Iowa Liquor Sales (BigQuery public data) · real sales, simulated campaigns"
+    scenario = f"scenario: dashboard ROAS {f7['assumed_roas']}, margin {f7['assumed_margin']}"
     s = []
+    # ---- core: seven slides on three decisions
     s.append(slide(f'<div class="kicker">Incrementality study</div><h1>Did the Ads Actually Work?</h1>'
-                   f'<div class="sub">Measuring what retargeting really causes</div>{ACCENT_BAR}'
+                   f'<div class="sub">What retargeting caused in a randomised test of {d["criteo_users"]} users, '
+                   f'and what to do about it</div>{ACCENT_BAR}'
                    f'<div class="sub" style="font-size:18px;margin-top:34px">{AUTHOR} · {DATE}</div>',
                    1, TOKENS["independence_note"], dark=True, cls="big"))
-    s.append(slide('<div class="kicker">The question</div><h1>Dashboards credit retargeting with sales. '
-                   'How many would have happened anyway?</h1><div class="grid4">'
-                   '<div class="qcard">How much do ads cause?<span>Not what they are credited with</span></div>'
-                   '<div class="qcard">Who is persuaded?<span>And who would buy anyway</span></div>'
-                   '<div class="qcard">Does it pay?<span>Profit per £1, not attributed return</span></div>'
-                   '<div class="qcard">How to measure next time?<span>When users can\'t be split</span></div></div>',
-                   2))
-    s.append(slide(f'<div class="kicker">The test</div><h1>A real randomised test on {d["criteo_users"]} users</h1>'
+    decisions = [
+        ("Should we trust attribution?", "Not on its own",
+         f"An estimated {f5['caused_per_100']} of every 100 view-through-credited conversions were caused by the ads "
+         f"({f5['caused_per_100_interval']}). Attributed ROAS overstates incremental ROAS by about "
+         f"{f5['attribution_overstatement']}."),
+        ("Should we move budget?", "Probably, but test first",
+         f"In the {scenario}, the weaker half of spend makes {f7['other_half_profit_per_pound']} per £1. "
+         "That comes from a model, so it is a hypothesis."),
+        ("Which experiment next?", "A holdout in the weaker half",
+         f"A 50/50 test inside that segment settles it with about {fb['users_needed']} users. Then keep an "
+         "always-on holdout."),
+    ]
+    s.append(slide('<div class="kicker">The answer first</div><h1>Three decisions this test can inform</h1>'
+                   '<div class="grid3">' + "".join(
+                       f'<div class="dcard"><div class="q">{q}</div><div class="a">{a}</div><div class="e">{e}</div>'
+                       f'</div>' for q, a, e in decisions) + "</div>"
+                   '<div class="caveats">'
+                   f'<div><b>How robust?</b> {fs["adjusted_specifications"]} adjustment methods give '
+                   f'{fs["caused_per_100_adjusted_range"]} caused per 100, about as wide as the statistical interval</div>'
+                   '<div><b>Money is a scenario.</b> The data has no prices; ROAS and margin are assumed and varied, and '
+                   'the break-even rule needs neither</div>'
+                   '<div><b>Benchmark levels.</b> Criteo sub-sampled the file; the methods carry over, the numbers must '
+                   'be measured again</div></div>', 2, criteo))
+    s.append(slide(f'<div class="kicker">The evidence</div><h1>A randomised test on {d["criteo_users"]} users, '
+                   'checked before trusting it</h1>'
                    '<div class="split"><div class="row">'
                    f'<div style="width:85%;background:{C["data.primary"]};color:#fff">85% allowed to see ads</div>'
                    f'<div style="width:15%;background:{C["data.comparison"]}">15% blocked</div></div>'
                    f'<div class="exposed"><div style="width:4.2%;background:{C["data.highlight"]}"></div>'
                    f'<div style="flex:1;background:{C["background.selected"]}"></div></div>'
                    '<div class="legend">Only 3.6% of the allowed group actually saw an ad (red). Because the split is '
-                   'random, any difference between the groups was caused by the ads.</div></div>'
-                   f'<ul class="points"><li>Plus {f8["simulated_tests"]} simulated campaigns on real Iowa county sales '
-                   'to grade regional testing methods</li><li>Criteo sub-sampled the data, so levels describe this file; '
-                   'the methods transfer</li></ul>', 3, criteo))
-    s.append(chart_slide(4, "Finding 1 · Check before you trust", "figures/experiment/balance.png", [
-        f"Split exactly {d['treated_share']} treated, as designed",
-        f"A model tells the groups apart slightly: AUC {f1['classifier_auc']} (placebo {f1['placebo_auc']})",
-        "Cause: several advertisers' tests merged; features were logged before any ad, so adjusting is valid",
-        f"It matters: visit lift {f3['visit_lift_raw']} raw, {f3['visit_lift_adjusted']} adjusted"], criteo))
-    s.append(chart_slide(5, "Findings 2 to 4 · Dashboard vs reality", "figures/lift/naive_vs_caused.png", [
+                   'random, the difference between the groups estimates what the ads caused.</div></div>'
+                   f'<ul class="points"><li>A small leak from merged advertiser tests (classifier AUC '
+                   f'{f1["classifier_auc"]}, placebo {f1["placebo_auc"]}), corrected by adjusting for features logged '
+                   f'before any ad</li><li>{fs["adjusted_specifications"]} adjustment methods put conversion lift at '
+                   f'{fs["conversion_adjusted_range"]}; the raw difference reads {f3["conversion_lift_raw"]}</li>'
+                   '<li>Criteo sub-sampled the data, so levels describe this benchmark; the methods transfer</li></ul>',
+                   3, criteo))
+    s.append(chart_slide(4, "The evidence · Dashboard view vs the test", "figures/lift/naive_vs_caused.png", [
         f"Saw an ad vs didn't looks like {f2['naive_multiple']}",
         f"Those users were already {f2['baseline_multiple']} likelier to buy",
-        f"The real effect of seeing an ad: {f4['real_multiple']} ({f4['conversion_effect_points']})"], criteo,
-        number=(f4["real_multiple"], "real effect of seeing an ad")))
-    s.append(chart_slide(6, "Finding 5 · The headline", "figures/attribution/credited_vs_caused.png", [
-        f"95% interval {f5['caused_per_100_interval']}",
-        f"Attribution overstates retargeting's return by about {f5['attribution_overstatement']}",
-        "Ads work, but attribution also hands them the sales of keen shoppers"], criteo,
-        number=(f5["caused_per_100"], "of every 100 credited conversions were caused by the ads")))
-    s.append(chart_slide(7, "Finding 6 · Who is persuaded", "figures/uplift/spend_curves.png", [
-        f"The top 20% of users hold {f6['top20_share_of_conversion_effect']} of the effect",
-        f"Half the spend, aimed at likely buyers, keeps {f6['half_spend_keeps_conversions']} of conversions caused",
-        "A simple likely-buyer model matched T- and X-learner uplift models on conversions"], criteo))
-    s.append(chart_slide(8, "Finding 7 · The money (illustrative: ROAS 8, margin 30%)", "figures/money/profit_per_pound.png", [
-        f"Dashboard implies {f7['dashboard_profit_per_pound']} per £1; really {f7['real_profit_per_pound']}",
-        f"The weaker half of spend makes {f7['other_half_profit_per_pound']} per £1",
-        f"Cutting it would roughly double profit ({f7['profit_multiple_after_cut']})"], criteo))
-    s.append(slide('<div class="kicker">Finding 7 · A rule anyone can use</div>'
+        f"Seeing an ad: {f2['baseline_conversion_rate']} to {f2['exposed_conversion_rate']} "
+        f"({f4['conversion_effect_points']})"], criteo,
+        number=(f4["causal_multiple"], "estimated causal effect of seeing an ad (CACE)")))
+    s.append(chart_slide(5, "Decision 1 · Should we trust attribution?", "figures/attribution/credited_vs_caused.png", [
+        f"95% interval {f5['caused_per_100_interval']}; across the adjustment methods, "
+        f"{fs['caused_per_100_adjusted_range']}",
+        f"Incremental ROAS = dashboard ROAS × 0.{f5['caused_per_100']}: about {f5['attribution_overstatement']} lower",
+        "Assumes the leak runs through the recorded features, and that ads are the only difference between groups"],
+        criteo, number=(f5["caused_per_100"], "of every 100 view-through-credited conversions were caused by the ads "
+                                               "(estimated)")))
+    s.append(chart_slide(6, f"Decision 2 · Should we move budget? ({scenario})", "figures/money/profit_per_pound.png", [
+        f"Top 20% of users hold {f6['top20_share_of_conversion_effect']} of the effect; half the spend, aimed at "
+        f"likely buyers, keeps {f6['half_spend_keeps_conversions']}",
+        f"£1 looks like {f7['dashboard_profit_per_pound']} but makes an incremental "
+        f"{f7['incremental_profit_per_pound']}; the weaker half makes {f7['other_half_profit_per_pound']}",
+        "A hypothesis: auction prices, ad frequency and audience mix can shift once targeting changes"], criteo))
+    actions = [
+        ("A 50/50 holdout inside the weaker half",
+         f"{fb['segment_share_of_users']} of users, half the ad views. Predicted lift {fb['predicted_lift']}; cut if "
+         f"the upper bound is below the {fb['break_even_lift']} break-even. About {fb['users_needed']} users"),
+        ("An always-on 10% holdout",
+         f"{f9['users_for_10pct_conversion_lift_10pct_holdout']} users to see a +10% conversion lift; visits read "
+         f"early with {f9['users_for_5pct_visit_lift_10pct_holdout']}"),
+        ("Report incremental ROAS next to attributed ROAS",
+         f"Break-even dashboard ROAS {f7['break_even_roas_30pct_margin']} at a 30% margin"),
+        ("Geo tests only where holdouts are impossible",
+         f"Methods benchmark: even 20 counties for 12 weeks detect only about {f8['best_design_min_detectable_lift']}"),
+    ]
+    s.append(slide('<div class="kicker">Decision 3 · Which experiment next?</div>'
+                   '<h1>Test the cut first, then keep an always-on holdout</h1>'
+                   '<div class="plan">' + "".join(f'<div class="item"><div class="a">{a}</div><div class="e">{e}</div>'
+                                                  f'</div>' for a, e in actions) + "</div>", 7,
+                   "And a marketing mix model for cross-channel budgets, anchored by these experiments"))
+    s.append(slide('<div class="kicker">Thank you</div><h1>Code, notebooks, dashboard and report</h1>'
+                   '<div class="links">github.com/sonny-888<br>linkedin.com/in/sharath-chandra-2bb604377</div>'
+                   f'<div class="sub" style="font-size:18px">{AUTHOR} · Data Analyst</div>', 8, dark=True, cls="big"))
+    # ---- appendix
+    s.append(slide('<div class="kicker">Appendix</div><h1>The detail behind the decisions</h1>'
+                   '<div class="sub">Experiment checks · sensitivity · break-even rule · targeting · geo methods '
+                   'benchmark · holdout sizing · methods and limits</div>', 9, dark=True, cls="big"))
+    s.append(chart_slide(10, "A1 · Experiment health", "figures/experiment/balance.png", [
+        f"Split exactly {d['treated_share']} treated, as designed",
+        f"No feature differs by more than {f1['max_abs_smd']} standard deviations",
+        f"Yet a classifier tells the groups apart slightly: AUC {f1['classifier_auc']} (placebo {f1['placebo_auc']})",
+        "Cause: several advertisers' tests merged with different treated shares"], criteo))
+    s.append(chart_slide(11, "A2 · How much does the correction depend on the method?", "figures/lift/sensitivity.png", [
+        f"{fs['adjusted_specifications']} adjusted specifications: conversion lift {fs['conversion_adjusted_range']}, "
+        f"visits {fs['visit_adjusted_range']}",
+        f"Caused per 100 credited: {fs['caused_per_100_adjusted_range']}",
+        f"Weighting shrinks the largest feature gap to {fs['weighted_max_abs_smd']} standard deviations",
+        "Untestable: a leak through something the file doesn't record"], criteo))
+    s.append(slide('<div class="kicker">A3 · A break-even rule anyone can use</div>'
                    f'<h1>At a 30% margin, retargeting needs a dashboard ROAS above {f7["break_even_roas_30pct_margin"]} '
                    'to pay</h1><div class="kpis">'
                    + "".join(f'<div class="kpi"><div class="bar" style="background:{c}"></div><div class="v">{v}</div>'
@@ -297,59 +363,40 @@ def build_deck() -> Path:
                                  (be_best, "Best half of spend", C["kpi.accents"][3]),
                                  (f7["break_even_roas_other_half_30pct_margin"], "Weaker half of spend",
                                   C["kpi.accents"][1])])
-                   + f'</div><div class="formula">Real ROAS = dashboard ROAS × <b>0.{f5["caused_per_100"]}</b>, the '
-                   'caused share from a holdout. No ROAS assumption needed.</div>', 9, criteo))
-    s.append(slide('<div class="kicker">Part two</div><h1>When you can\'t hold users out</h1>'
-                   '<div class="sub">TV, outdoor and some ad platforms can\'t split individual users. The fallback is '
-                   'a geo test.</div>', 10, dark=True, cls="big"))
-    s.append(chart_slide(11, "Finding 8 · What a geo test looks like", "figures/geo/example_test.png", [
-        "A weighted mix of other counties (the synthetic twin) tracks the test counties",
-        "During the campaign, the gap is the effect",
-        "The campaign is invented, so the true answer is known"], iowa))
-    s.append(chart_slide(12, "Finding 8 · Geo tests only catch big effects", "figures/geo/min_detectable_lift.png", [
+                   + f'</div><div class="formula">Incremental ROAS = dashboard ROAS × <b>0.{f5["caused_per_100"]}</b>, '
+                   'the caused share from a holdout. Break-even needs no ROAS assumption.</div>', 12, criteo))
+    s.append(chart_slide(13, "A4 · Who is persuaded", "figures/uplift/spend_curves.png", [
+        f"The top 20% of users hold {f6['top20_share_of_conversion_effect']} of the effect",
+        f"Half the spend, aimed at likely buyers, keeps {f6['half_spend_keeps_conversions']} of conversions caused "
+        f"({f6['half_spend_keeps_conversions_interval']})",
+        "A simple likely-buyer model matched T- and X-learner uplift models on conversions"], criteo))
+    s.append(chart_slide(14, "A5 · Geo methods benchmark: only big effects show", "figures/geo/min_detectable_lift.png", [
+        f"{f8['simulated_tests']} simulated campaigns on real Iowa county sales, so the true answer is known",
         f"Best design (20 counties, 12 weeks) reliably detects about {f8['best_design_min_detectable_lift']}",
-        "Typical ad effects are a few percent",
-        "More regions help faster than more weeks; size the test by simulation first"], iowa))
-    s.append(chart_slide(13, "Finding 8 · Check the method too", "figures/geo/false_alarms.png", [
+        "Assumes a uniform lift, random counties and no spillover: a best case",
+        "More regions help faster than more weeks"], iowa))
+    s.append(chart_slide(15, "A6 · Geo methods benchmark: check the method too", "figures/geo/false_alarms.png", [
         f"Difference-in-differences: {f8['did_false_alarms']} false alarms",
         f"Synthetic control: {f8['synthetic_control_false_alarms']}",
         f"CausalImpact-style: {f8['causalimpact_style_false_alarms']}, promised 5%",
         "Placebo-test any model before trusting its intervals"], iowa))
-    s.append(chart_slide(14, "Finding 9 · Sizing the holdout", "figures/plan/holdout_sizing.png", [
+    s.append(chart_slide(16, "A7 · Sizing the always-on holdout", "figures/plan/holdout_sizing.png", [
         f"About {f9['users_for_10pct_conversion_lift_10pct_holdout']} users to see a +10% conversion lift with a 10% "
         "holdout",
         f"{f9['users_for_10pct_conversion_lift_even_split']} with a 50/50 split",
         f"Visits read early with about {f9['users_for_5pct_visit_lift_10pct_holdout']}"],
         "Base rates: Criteo control group · formula checked against the test's own precision"))
-    actions = [
-        ("Report incremental ROAS next to attributed ROAS", f"Only {f5['caused_per_100']} of 100 credited conversions "
-                                                             "were caused"),
-        ("Keep an always-on, properly sized holdout",
-         f"{f9['users_for_10pct_conversion_lift_10pct_holdout']} users for a +10% conversion lift"),
-        ("Test the budget cut before making it", f"Half the spend keeps {f6['half_spend_keeps_conversions']}; the "
-                                                 "weaker half loses money"),
-        ("Start with the simple targeting model", "It matched uplift models on conversions"),
-        ("Geo tests only where holdouts are impossible", f"Best design detects about "
-                                                         f"{f8['best_design_min_detectable_lift']}; placebo-check models"),
-    ]
-    s.append(slide('<div class="kicker">The plan</div><h1>Measure what ads cause, not what they\'re credited with</h1>'
-                   '<div class="plan">' + "".join(f'<div class="item"><div class="a">{a}</div><div class="e">{e}</div>'
-                                                  f'</div>' for a, e in actions) + "</div>", 15,
-                   "And a marketing mix model for cross-channel budgets, anchored by these experiments"))
-    s.append(slide('<div class="kicker">Thank you</div><h1>Code, notebooks, dashboard and report</h1>'
-                   '<div class="links">github.com/sonny-888<br>linkedin.com/in/sharath-chandra-2bb604377</div>'
-                   f'<div class="sub" style="font-size:18px">{AUTHOR} · Data Analyst</div>', 16, dark=True, cls="big"))
-    s.append(chart_slide(17, "Backup · Methods", "figures/lift/raw_vs_adjusted.png", [
-        "Intent-to-treat with intervals; Lin and doubly robust (AIPW, cross-fitted) adjustment",
-        "Two-stage least squares for the effect of seeing an ad",
-        "T- and X-learner uplift graded on 2.8M held-out users",
-        "Difference-in-differences, synthetic control, structural time series"], criteo))
-    s.append(slide('<div class="kicker">Backup · Limits</div><h1>What this does and doesn\'t show</h1><ul class="points">'
+    s.append(slide('<div class="kicker">A8 · Methods and limits</div><h1>What this does and doesn&#39;t show</h1>'
+                   '<ul class="points">'
+                   "<li>Methods: intent-to-treat; Lin and doubly robust (AIPW, cross-fitted) adjustment; two-stage "
+                   "least squares (CACE); T- and X-learner uplift on 2.8M held-out users; DiD, synthetic control, "
+                   "structural time series</li>"
                    "<li>Criteo sub-sampled the file: levels describe this benchmark; the methods transfer</li>"
-                   "<li>No prices or costs: money uses stated assumptions, with sensitivity tables</li>"
-                   "<li>Spend is proxied by ad views; real cost depends on frequency and price</li>"
-                   "<li>One geo dataset: liquor wholesale orders are lumpy; smoother sales detect smaller lifts</li></ul>",
-                   18))
+                   "<li>No prices or costs: money figures are scenarios, with sensitivity tables and a break-even "
+                   "rule</li>"
+                   "<li>Spend is proxied by ad views; real cost depends on frequency and auction prices</li>"
+                   "<li>Geo results are a methods benchmark on one lumpy dataset, not a measured campaign</li></ul>",
+                   17))
     doc = (f'<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><title>Did the Ads Actually Work? Deck'
            f'</title><style>{DECK_CSS}</style></head><body>{"".join(s)}</body></html>')
     out = ROOT / "presentation" / "deck.html"
