@@ -2,8 +2,9 @@
 
 **How many sales do retargeting ads actually cause, and what should a marketer do about it?** An incrementality study on a public randomised ad test of 13,979,592 users, built around three decisions: should we trust attribution, should we move budget, and which experiment should we run next. A technical appendix benchmarks geo-test methods on real Iowa sales with 2,700 simulated campaigns.
 
+[![CI](https://github.com/sonny-888/ad-incrementality/actions/workflows/ci.yml/badge.svg)](https://github.com/sonny-888/ad-incrementality/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)
-![SQL](https://img.shields.io/badge/SQL-BigQuery-4285F4?logo=googlebigquery&logoColor=white)
+![SQL](https://img.shields.io/badge/SQL-BigQuery%20%2B%20DuckDB-4285F4?logo=googlebigquery&logoColor=white)
 ![Power BI](https://img.shields.io/badge/Power%20BI-dashboard-F2C811?logo=powerbi&logoColor=black)
 ![Status](https://img.shields.io/badge/Status-Complete-brightgreen)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
